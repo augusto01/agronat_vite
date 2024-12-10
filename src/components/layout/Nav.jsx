@@ -25,12 +25,12 @@ export const Nav = () => {
           </li>
           <li className="nav-item">
             <NavLink to="/articulos" className="nav-link">
-              Artículos
+              ¿Quienes Somos?
             </NavLink>
           </li>
           <li className="nav-item">
             <NavLink to="/crear-articulos" className="nav-link">
-              Crear Artículos
+              Servicios
             </NavLink>
           </li>
           <li className="nav-item">
