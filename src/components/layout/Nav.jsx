@@ -38,6 +38,11 @@ export const Nav = () => {
               Contacto
             </NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink to="/login" className="nav-link">
+              Iniciar Sesión
+            </NavLink>
+          </li>
         </ul>
       </div>
     </div>

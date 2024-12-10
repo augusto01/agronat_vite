@@ -9,6 +9,7 @@ import { SideBar } from "../components/layout/SideBar";
 import { Footer } from "../components/layout/Footer";
 import { Crear } from "../components/pages/Crear";
 import { Contacto } from "../components/pages/Contacto";
+import { Login } from "../components/pages/Login";
 
 export const Rutas = () => {
   return (
@@ -24,6 +25,7 @@ export const Rutas = () => {
             <Route path="/articulos" element={<Articulos />} />
             <Route path="/crear-articulos" element={<Crear />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/articulo/:id" element={<Articulo />} /> 
           </Routes>
         </section>
