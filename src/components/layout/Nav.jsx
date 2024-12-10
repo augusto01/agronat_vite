@@ -3,20 +3,46 @@ import { NavLink } from 'react-router-dom';
 
 export const Nav = () => {
   return (
-  <nav className="nav bg-success p-2 text-white d-flex justify-content-around">
-    <NavLink to="/inicio" className="text-white text-decoration-none flex-grow-1 text-center">
-      Inicio
-    </NavLink>
-    <NavLink to="/articulos" className="text-white text-decoration-none flex-grow-1 text-center">
-      Artículos
-    </NavLink>
-    <NavLink to="/crear-articulos" className="text-white text-decoration-none flex-grow-1 text-center">
-      Crear Artículos
-    </NavLink>
-    <NavLink to="/contacto" className="text-white text-decoration-none flex-grow-1 text-center">
-      Contacto
-    </NavLink>
+    <nav className="navbar navbar-expand-md navbar-dark bg-success">
+    <div className="container-fluid">
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav w-100 justify-content-around">
+          <li className="nav-item">
+            <NavLink to="/inicio" className="nav-link">
+              Inicio
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink to="/articulos" className="nav-link">
+              Artículos
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink to="/crear-articulos" className="nav-link">
+              Crear Artículos
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink to="/contacto" className="nav-link">
+              Contacto
+            </NavLink>
+          </li>
+        </ul>
+      </div>
+    </div>
   </nav>
+  
 
   );
 };
