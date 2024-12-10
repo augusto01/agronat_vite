@@ -28,7 +28,6 @@ export const Rutas = () => {
           </Routes>
         </section>
       <Footer/>
-      <SideBar/>   
     </BrowserRouter>
   );
 }
