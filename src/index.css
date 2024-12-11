@@ -1,5 +1,4 @@
-
-/*FOOTER*/
+/*============================ FOOTER ========================*/
 .footer {
   font-size: 0.9rem;
 }
@@ -34,4 +33,64 @@
   .footer .fab {
     font-size: 2rem;
   }
+}
+
+
+/*============================UBICACIÓN========================*/
+
+/* Estilos generales para el contenedor */
+#ubicacion {
+  background-color: #367c33; /* Color de fondo suave */
+  padding: 40px 20px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Título */
+.title-ubicacion {
+  font-family: 'Arial', sans-serif; /* Fuente */
+  font-size: 2.5rem; /* Tamaño de fuente */
+  color: white; /* Color de texto */
+  text-align: center; /* Centrar texto */
+  margin-bottom: 20px; /* Espacio inferior */
+}
+
+/* Contenedor de información */
+.container-info {
+  display: flex; /* Flexbox para alinear elementos */
+  flex-direction: column; /* Dirección de columna */
+  align-items: center; /* Centrar elementos */
+}
+
+/* Estilo para el iframe del mapa */
+.img-thumbail {
+  width: 100%; /* Ancho completo */
+  max-width: 600px; /* Ancho máximo */
+  height: 450px; /* Altura fija */
+  border-radius: 8px; /* Bordes redondeados */
+  overflow: hidden; /* Ocultar el desbordamiento */
+  margin-bottom: 20px; /* Espacio inferior */
+}
+
+/* Estilos para la información de contacto */
+.item-info {
+  font-family: 'Roboto', sans-serif; /* Fuente */
+  color: #555; /* Color de texto */
+  text-align: left; /* Centrar texto */
+}
+
+/* Iconos */
+.bi {
+  font-size: 1.5rem; /* Tamaño de icono */
+  margin-right: 10px; /* Espacio a la derecha */
+  color: white; /* Color del icono */
+}
+
+/* Enlaces */
+.item-info a {
+  color: white; /* Color del enlace */
+  text-decoration: none; /* Sin subrayado */
+}
+
+.item-info a:hover {
+  text-decoration: none; /* Subrayar al pasar el ratón */
 }

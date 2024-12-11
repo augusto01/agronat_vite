@@ -1,14 +1,21 @@
-import React from 'react'
-import { Articulo } from './Articulo'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Servicios } from './Servicios';
+import { Ubicacion } from './Ubicacion';
 
 export const Inicio = () => {
   return (
-    <div className='jumbo '>
-        <h1>Bienvenido al blog con React</h1>
-        <p>Blog desarrollado con el stack MERN(MONGO, EXPRESS, REACT Y NODEJS)</p>
-        
-        <Link to={'/articulos'} className='button'>Ver los Articulos</Link>
-    </div>    
-  )
-}
+    <div className='container jumbo mt-5'>
+      <h1 className='text-center'>Bienvenido a Agronat</h1>
+      <p className='lead text-center'>
+        Servicios de fumigación, limpieza de piscinas y más, en la comodidad de tu hogar.
+      </p>
+
+      
+      <Servicios/>
+      <Ubicacion/>
+      
+    </div>
+  );
+};
