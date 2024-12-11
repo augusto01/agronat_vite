@@ -1,3 +1,11 @@
+body{
+  background-color: #adba9d;
+}
+
+.text-center{
+  color: black;
+  font-weight:400;
+}
 /*============================ FOOTER ========================*/
 .footer {
   font-size: 0.9rem;
@@ -41,7 +49,7 @@
 /* Estilos generales para el contenedor */
 #ubicacion {
   background-color: #367c33; /* Color de fondo suave */
-  padding: 40px 20px; /* Espaciado interno */
+  padding-top: 10px;
   border-radius: 8px; /* Bordes redondeados */
 }
 
@@ -57,8 +65,6 @@
 /* Contenedor de información */
 .container-info {
   display: flex; /* Flexbox para alinear elementos */
-  flex-direction: column; /* Dirección de columna */
-  align-items: center; /* Centrar elementos */
 }
 
 /* Estilo para el iframe del mapa */
@@ -82,15 +88,62 @@
 .bi {
   font-size: 1.5rem; /* Tamaño de icono */
   margin-right: 10px; /* Espacio a la derecha */
-  color: white; /* Color del icono */
+  color: #bccc74; /* Color del icono */
 }
 
 /* Enlaces */
 .item-info a {
-  color: white; /* Color del enlace */
+  color: #bccc74; /* Color del enlace */
+  margin-left: 10px;
   text-decoration: none; /* Sin subrayado */
 }
 
 .item-info a:hover {
-  text-decoration: none; /* Subrayar al pasar el ratón */
+  text-decoration: none;
+}
+
+.container-ubicacion{
+  display: flex;
+}
+
+.container-ubicacion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.img-thumbnail {
+    width: 100%;
+    max-width: 600px; /* Ancho máximo del mapa */
+    height: auto; /* Altura automática para mantener la proporción */
+    margin-bottom: 20px;
+}
+
+.container-info {
+    display: inline-block;
+    flex-direction: row;
+    text-align: center;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    text-align: left;
+}
+
+
+
+/* Media query para dispositivos móviles */
+@media (max-width: 768px) {
+    .container-info {
+        flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+        align-items: center; /* Centra los elementos */
+    }
+
+    
+
+    .item-info {
+        font-size: 12px; /* Tamaño de fuente más pequeño en pantallas pequeñas */
+    }
 }

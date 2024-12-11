@@ -25,7 +25,7 @@ export const Nav = () => {
           </li>
           <li className="nav-item">
             <NavLink to="/articulos" className="nav-link">
-              ¿Quienes Somos?
+              ¿Quiénes Somos?
             </NavLink>
           </li>
           <li className="nav-item">
