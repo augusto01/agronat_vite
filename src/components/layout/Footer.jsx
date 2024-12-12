@@ -51,7 +51,7 @@ export const Footer = () => {
       </div>
       <div className="bg-black py-3">
         <div className="container">
-          <p className="mb-0 text-center">&copy; 2024 Agronat. Todos los derechos reservados.</p>
+          <p className="mb-0 text-center text-white">&copy; 2024 Agronat. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
