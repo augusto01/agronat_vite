@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios'
 
 export const Login = () => {
+
+  /**ASIGNAMOS LAS CREDENCIALES  */
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes manejar la lógica de inicio de sesión
+    
+    axios.post('mongodb://localhost:27017/agronat',{email,password})
+    .then(result => console.log(result))
+    .catch(err => console.log(err))
+
+    //Aquí puedes manejar la lógica de inicio de sesión
     console.log('Iniciando sesión con:', email, password);
   };
 
