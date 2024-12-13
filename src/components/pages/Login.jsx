@@ -12,7 +12,7 @@ export const Login = () => {
     e.preventDefault();
     setLoading(true); // Activar el estado de carga
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const response = await axios.post('http://localhost:5000/login',{email, password });
       localStorage.setItem('token', response.data.token);
       alert('Login successful');
     } catch (error) {
