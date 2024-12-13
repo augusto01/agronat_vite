@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios'
+import axios from 'axios';
 
 export const Login = () => {
-
-  /**ASIGNAMOS LAS CREDENCIALES  */
+  /** ASIGNAMOS LAS CREDENCIALES  */
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // Estado para manejar la carga
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    axios.post('mongodb://localhost:27017/agronat',{email,password})
-    .then(result => console.log(result))
-    .catch(err => console.log(err))
-
-    //Aquí puedes manejar la lógica de inicio de sesión
-    console.log('Iniciando sesión con:', email, password);
+    setLoading(true); // Activar el estado de carga
+    try {
+      const response = await axios.post('http://localhost:5000/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      alert('Login successful');
+    } catch (error) {
+      alert('Login failed: ' + error.message);
+    } finally {
+      setLoading(false); // Desactivar el estado de carga
+    }
   };
 
   return (
@@ -47,7 +50,9 @@ export const Login = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-success w-100">Iniciar Sesión</button>
+            <button type="submit" className="btn btn-success w-100" disabled={loading}>
+              {loading ? 'Cargando...' : 'Iniciar Sesión'}
+            </button>
           </form>
         </div>
       </div>

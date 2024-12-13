@@ -1,34 +1,70 @@
-const express = require ("express")
-const mongoose = require ("mongoose")
-const cors = require ("cors");
-const UsuarioModel = require ('./models/Usuario');
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+
+
+// Cargar variables de entorno
+dotenv.config();
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-//puerto a utilizar 
-const puerto = 3000;
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
-//cadena de conexion a la base de datos
-mongoose.connect("mongodb://localhost:27017/agronat");
+// Define el modelo de usuario
+const UserSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+});
 
+const User = mongoose.model('User', UserSchema);
 
-app.listen(puerto, ()=>{
-    console.log("servidor corriendo en el puerto:",puerto);
-})
+// Rutas
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
 
-//metodo para el login de usuarios 
-app.get ('/registro', (req, res) =>{
-    res.render('login');
+    if (!username || !password) {
+        return res.status(400).send('Username and password are required');
+    }
 
-    
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ username, password: hashedPassword });
+        await user.save();
+        res.status(201).send('User registered');
+    } catch (error) {
+        res.status(500).send('Error registering user: ' + error.message);
+    }
+});
 
-})
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
 
-app.get ('/signup', (req, res) =>{
-    res.render('signup');
+    if (!username || !password) {
+        return res.status(400).send('Username and password are required');
+    }
 
-    
+    try {
+        const user = await User.findOne({ username });
+        if (user && await bcrypt.compare(password, user.password)) {
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+            res.json({ token });
+        } else {
+            res.status(401).send('Invalid credentials');
+        }
+    } catch (error) {
+        res.status(500).send('Error logging in: ' + error.message);
+    }
+});
 
-})
+const puerto = 5000;
+app.listen(puerto, () => {
+    console.log('Servidor corriendo en el puerto: ' + puerto);
+});
