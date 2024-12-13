@@ -48,6 +48,10 @@ app.post('/register', async (req, res) => {
 
 
 /**==================LOGIN===================== */
+
+
+
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -56,7 +60,22 @@ app.post('/login', async (req, res) => {
     }
 
     try {
+
+        const hashedPassword = 'a8f5a3b8d2e7d8f7f8b2b8a2f8c4e3f2f8c2e3e3c2f8e6b8f2c5a3e4c6e2f7'; // La contraseña encriptada de tu base de datos
+        const plainPassword = password;
+
+       
+        
         const user = await User.findOne({ email });
+        console.log('Usuario encontrado:', user);
+        if (!user) {
+        console.log('Usuario no encontrado con el email:', email);
+        return res.status(401).send('Invalid credentials');
+        }
+
+        
+
+
         if (user && await bcrypt.compare(password, user.password)) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
             res.json({ token });
