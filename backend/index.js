@@ -50,9 +50,6 @@ app.post('/register', async (req, res) => {
 
 /**==================LOGIN===================== */
 
-
-
-
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -70,13 +67,15 @@ app.post('/login', async (req, res) => {
         }
 
         
-
-
         if (user && await bcrypt.compare(password, user.password)) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+            
+            
+            // Esto debería ser true si las contraseñas coinciden
             res.json({ token });
         } else {
-            res.status(401).send('Invalid credentials');
+            res.status(401).send('en esta parte esta el error'+user._id+process.env.JWT_SECRET);
         }
     } catch (error) {
         res.status(500).send('Error logging in: ' + error.message);
