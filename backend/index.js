@@ -15,30 +15,31 @@ app.use(cors());
 app.use(express.json());
 
 
-//CONEXION A LA DB 
+//CONEXION A LA DB - REVISAR ARCHIVO .ENV 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Define el modelo de usuario
 const UserSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-});
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+}, { collection: 'users' }); // Nombre de la coleccion en la base de datos !
+
 
 const User = mongoose.model('User', UserSchema);
 
 // Rutas
 app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password) {
         return res.status(400).send('Username and password are required');
     }
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, password: hashedPassword });
+        const user = new User({ email, password: hashedPassword });
         await user.save();
         res.status(201).send('User registered');
     } catch (error) {
@@ -61,12 +62,7 @@ app.post('/login', async (req, res) => {
 
     try {
 
-        const hashedPassword = 'a8f5a3b8d2e7d8f7f8b2b8a2f8c4e3f2f8c2e3e3c2f8e6b8f2c5a3e4c6e2f7'; // La contraseña encriptada de tu base de datos
-        const plainPassword = password;
-
-       
-        
-        const user = await User.findOne({ email });
+        const user = await User.findOne({email});
         console.log('Usuario encontrado:', user);
         if (!user) {
         console.log('Usuario no encontrado con el email:', email);
