@@ -1,7 +1,8 @@
+// Home.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/sb-admin-2.css';
+import '../../styles/Dashboard.css'; // Importa los estilos del dashboard
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const Home = () => {
               <a className="collapse-item" href="#">Cards</a>
             </div>
           </div>
-        </li>
+          </li>
 
         {/* Divider */}
         <hr className="sidebar-divider d-none d-md-block" />
@@ -77,11 +78,14 @@ export const Home = () => {
         {/* Main Content */}
         <div id="content">
           {/* Topbar */}
+          
           <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
             {/* Sidebar Toggle (Topbar) */}
+            
             <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-3">
               <i className="fa fa-bars"></i>
             </button>
+            
 
             {/* Topbar Navbar */}
             <ul className="navbar-nav ml-auto">
@@ -90,7 +94,12 @@ export const Home = () => {
                 <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span className="mr-2 d-none d-lg-inline text-gray-600 small">{localStorage.getItem('nombre')}</span>
                   <img className="img-profile rounded-circle" src="img/user.png" alt="User Avatar" />
+                  <button className="btn btn-danger btn-lg" onClick={handleLogout}>
+                  Cerrar Sesión
+                </button>
                 </a>
+                
+                
                 {/* Dropdown - User Information */}
                 <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                   <a className="dropdown-item" href="#">
@@ -113,6 +122,7 @@ export const Home = () => {
                 </div>
               </li>
             </ul>
+            
           </nav>
           {/* End of Topbar */}
 
