@@ -75,7 +75,7 @@ app.post('/login', async (req, res) => {
             // Esto debería ser true si las contraseñas coinciden
             res.json({ token });
         } else {
-            res.status(401).send('en esta parte esta el error'+user._id+process.env.JWT_SECRET);
+            res.status(401).send('Error login');
         }
     } catch (error) {
         res.status(500).send('Error logging in: ' + error.message);
