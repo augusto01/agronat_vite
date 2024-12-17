@@ -54,8 +54,25 @@ exports.login = async (req, res) => {
         if (user && await bcrypt.compare(password, user.password)) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
             
-            // Si los password coinciden generamos el token
-            res.json({ token });
+            // Si los password coinciden generamos el token y obtenemos los datos del usuario
+            res.json({
+                token,
+                nombre: user.nombre,
+                apellido: user.apellido,
+                username: user.nombre_usuario,
+                email: user.email,
+                domicilio: {
+                  calle: user.domicilio.calle,
+                  numero: user.domicilio.numero,
+                  ciudad: user.domicilio.ciudad,
+                  provincia: user.domicilio.provincia,
+                  codigo_postal: user.domicilio.codigo_postal
+                }
+              });
+
+              console.log('Datos del usuario:', user);
+
+              
         } else {
             res.status(401).send('Error login');
         }

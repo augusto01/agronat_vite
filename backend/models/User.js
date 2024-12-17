@@ -14,11 +14,22 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+  nombre: { type: String, required: true },
+  apellido: { type: String, required: true },
+  nombre_usuario: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  domicilio: {
+    calle: { type: String, required: true },
+    numero: { type: Number, required: true },
+    ciudad: { type: String, required: true },
+    provincia: { type: String, required: true },
+    codigo_postal: { type: String, required: true }
+  }
 }, { collection: 'users' });
 
 module.exports = mongoose.model('User', UserSchema);
+
 
 
 
