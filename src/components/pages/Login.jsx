@@ -17,8 +17,9 @@ const storeUserData = (userData) => {
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +45,6 @@ export const Login = () => {
       <div className="wrap-login">
         <form className="login-form validate-form" onSubmit={handleSubmit}>
           <span className="login-form-title">INGRESAR</span>
-
           <div className="wrap-input100" data-validate="Usuario incorrecto">
             <input
               className="input100"
