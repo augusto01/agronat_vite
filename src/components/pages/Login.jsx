@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../styles/Login.css';
 import axios from 'axios';
 
 export const Login = () => {
@@ -10,9 +11,14 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      alert('Por favor, completa todos los campos.');
+      return; // No enviar el formulario si los campos están vacíos
+    }
+    
     setLoading(true); // Activar el estado de carga
     try {
-      const response = await axios.post('http://localhost:5000/login',{email, password });
+      const response = await axios.post('http://localhost:5000/login', { email, password });
       localStorage.setItem('token', response.data.token);
       alert('Login successful');
     } catch (error) {
@@ -23,38 +29,48 @@ export const Login = () => {
   };
 
   return (
-    <div className="container m-5">
-      <div className="row justify-content-center">
-        <div className="col-md-4">
-          <h2 className="text-center">Iniciar Sesión</h2>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">Correo Electrónico</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+    <div className="container-login">
+      <div className="wrap-login">
+        <form className="login-form validate-form" onSubmit={handleSubmit}>
+          <span className="login-form-title">INGRESAR</span>
+          
+          <div className="wrap-input100" data-validate="Usuario incorrecto">
+            <input 
+              className="input100" 
+              type="email" 
+              id="usuario" 
+              name="usuario" 
+              placeholder="Usuario" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required // Añadir required
+            />
+            <span className="focus-efecto"></span>
+          </div>
+          
+          <div className="wrap-input100" data-validate="Password incorrecto">
+            <input 
+              className="input100" 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required // Añadir required
+            />
+            <span className="focus-efecto"></span>
+          </div>
+          
+          <div className="container-login-form-btn">
+            <div className="wrap-login-form-btn">
+              <div className="login-form-bgbtn"></div>
+              <button type="submit" className="login-form-btn" disabled={loading}>
+                {loading ? 'Cargando...' : 'INICIAR SESIóN'}
+              </button>
             </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Contraseña</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-success w-100" disabled={loading}>
-              {loading ? 'Cargando...' : 'Iniciar Sesión'}
-            </button>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );
