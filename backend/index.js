@@ -58,12 +58,11 @@ app.post('/login', async (req, res) => {
     }
 
     try {
-
-        const user = await User.findOne({email});
-        console.log('Usuario encontrado:', user);
-        if (!user) {
-        console.log('Usuario no encontrado con el email:', email);
-        return res.status(401).send('Invalid credentials');
+            const user = await User.findOne({email});
+            console.log('Usuario encontrado:', user);
+            if (!user) {
+            console.log('Usuario no encontrado con el email:', email);
+            return res.status(401).send('Invalid credentials');
         }
 
         
@@ -72,7 +71,7 @@ app.post('/login', async (req, res) => {
 
             
             
-            // Esto debería ser true si las contraseñas coinciden
+            // si los password coinciden generamos el token
             res.json({ token });
         } else {
             res.status(401).send('Error login');
