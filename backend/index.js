@@ -28,7 +28,7 @@ connectDB();
 
 
 
-app.use('/', userRoutes); // RUTAS USUARIO
+app.use('/api/user', userRoutes); // RUTAS USUARIO
 
 const puerto = 5000;
 app.listen(puerto, () => {

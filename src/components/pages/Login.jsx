@@ -32,12 +32,13 @@ export const Login = () => {
     try {
 
       //SI EL LOGEO ES EXITOSO OBTENEMOS LOS DATOS DEL USUARIO PARA EL DASHBOARD 
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const response = await axios.post('http://localhost:5000/api/user/login', { email, password });
       storeUserData(response.data);
       navigate('/welcome');
 
     } catch (error) {
 
+      console.error('Error de inicio de sesión:', error); // Log detallado
       alert('Login failed: ' + error.message);
     } finally {
       setLoading(false);

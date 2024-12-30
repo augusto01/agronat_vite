@@ -15,9 +15,15 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const check = require ('../middlewares/auth.js')
 
+
+/**===============RUTAS POST============ */
 router.post('/register', userController.register);
 router.post('/login', userController.login); 
+
+/**===============RUTAS GET============ */
+router.get('/profile',check.auth ,userController.profile)
 
 
 
