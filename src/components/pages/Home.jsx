@@ -46,13 +46,25 @@ export const Home = () => {
         <hr className="sidebar-divider" />
 
         {/* Heading */}
-        <div className="sidebar-heading">Interface</div>
+        <div className="sidebar-heading">OPCIONES</div>
 
         {/* Nav Item - Pages Collapse Menu */}
         <li className="nav-item">
           <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
             <i className="fas fa-fw fa-cog"></i>
-            <span>Components</span>
+            <span>Usuarios</span>
+          </a>
+          <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i className="fas fa-fw fa-cog"></i>
+            <span>Ventas</span>
+          </a>
+          <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i className="fas fa-fw fa-cog"></i>
+            <span>Productos</span>
+          </a>
+          <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <i className="fas fa-fw fa-cog"></i>
+            <span>Proveedores</span>
           </a>
           <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div className="bg-white py-2 collapse-inner rounded">

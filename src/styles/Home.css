@@ -1,0 +1,69 @@
+/* src/components/pages/Home.css */
+
+body {
+    background-color: #121212; /* Fondo oscuro */
+    color: #E0E0E0; /* Color de texto claro */
+    font-family: 'Arial', sans-serif; /* Fuente minimalista */
+}
+
+h2 {
+    color: #FFFFFF; /* Color blanco para los encabezados */
+}
+
+.dashboard-card {
+    background-color: #1E1E1E; /* Fondo de las tarjetas */
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Sombra para profundidad */
+    flex: 1; /* Permitir que las tarjetas crezcan */
+}
+
+.dashboard-container {
+    display: flex; /* Usar flexbox para alinear las tarjetas */
+    gap: 15px; /* Espacio entre las tarjetas */
+}
+
+.panel-izquierdo {
+    background-color: #1A1A1A; /* Fondo distinto para el panel de la izquierda */
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+button {
+    transition: background-color 0.3s ease; /* Transición suave para hover */
+}
+
+button.bg-green-400 {
+    background-color: #4CAF50; /* Verde */
+}
+
+button.bg-orange-400 {
+    background-color: #FF9800; /* Naranja */
+}
+
+button.bg-red-400 {
+    background-color: #F44336; /* Rojo */
+}
+
+button.bg-[#2291B9] {
+    background-color: #2291B9; /* Azul claro */
+}
+
+button:hover {
+    opacity: 0.9; /* Efecto de hover */
+}
+
+input {
+    background-color: #2A2A2A; /* Fondo de entrada oscuro */
+    color: #E0E0E0; /* Texto claro en entradas */
+    border: 2px solid #444; /* Borde de entrada */
+    border-radius: 5px;
+}
+
+input:focus {
+    border-color: #2196F3; /* Color de borde en foco */
+    outline: none; /* Sin contorno */
+}
