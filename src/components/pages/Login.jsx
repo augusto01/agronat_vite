@@ -31,12 +31,13 @@ export const Login = () => {
 
     setLoading(true);
     try {
+
       // SI EL LOGEO ES EXITOSO OBTENEMOS LOS DATOS DEL USUARIO PARA EL DASHBOARD
       const response = await axios.post('http://localhost:5000/api/user/login', { email, password });
       storeUserData(response.data);
       navigate('/welcome');
       login(); // Llama a la función login del contexto de autenticación
-      console.log('El usuario esta logueado: ', isLoggedIn);
+      
     } catch (error) {
       console.error('Error de inicio de sesión:', error); // Log detallado
       alert('Login failed: ' + error.message);
