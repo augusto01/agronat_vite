@@ -3,11 +3,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/Dashboard.css'; // Importa los estilos del dashboard
+import {useAuth} from '../../context/AuthProvider.jsx'
 
 export const Home = () => {
   const navigate = useNavigate();
-
+  const { isLoggedIn, logout } = useAuth();
   const handleLogout = () => {
+      
+    
     // Eliminar los datos del usuario del localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('nombre');
@@ -17,6 +20,11 @@ export const Home = () => {
 
     // Redirigir al usuario a la página de login
     navigate('/login');
+
+    //ACTUALIZAMOS ESTADO A FALSO
+    logout();
+
+    
   };
 
   return (

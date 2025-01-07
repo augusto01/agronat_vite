@@ -38,6 +38,7 @@ export const Login = () => {
       navigate('/welcome');
       login(); // Llama a la función login del contexto de autenticación
       
+      
     } catch (error) {
       console.error('Error de inicio de sesión:', error); // Log detallado
       alert('Login failed: ' + error.message);

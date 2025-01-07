@@ -11,30 +11,33 @@ import { Contacto } from "../components/pages/Contacto";
 import { Login } from "../components/pages/Login";
 import { Servicios } from "../components/pages/Servicios";
 import { Ubicacion } from "../components/pages/Ubicacion";
+import { useAuth } from "../context/AuthProvider.jsx";
 import { Home } from "../components/pages/Home";
 
 export const Rutas = () => {
+  const { isLoggedIn } = useAuth();
+
   return (
     <BrowserRouter>
       {/**LAYOUT */}
-      <Header/>
-      <Nav/>
-        {/**CONTENIDO CENTRAL */}
-        <section id="content" className="content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/inicio" />} />
-            <Route path="/inicio" element={<Inicio />} />
-            <Route path="/articulos" element={<Articulos />} />
-            <Route path="/servicios" element={<Servicios/>} />
-            <Route path="/ubicacion" element={<Ubicacion/>} />
-            <Route path="/crear-articulos" element={<Crear />} />
-            <Route path="/contacto" element={<Contacto />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/welcome" element={<Home/>} />
-            <Route path="/articulo/:id" element={<Articulo />} /> 
-          </Routes>
-        </section>
-      <Footer/>
+      {!isLoggedIn && <Header/>}
+      {!isLoggedIn && <Nav />}
+      {/**CONTENIDO CENTRAL */}
+      <section id="content" className="content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/inicio" />} />
+          <Route path="/inicio" element={<Inicio />} />
+          <Route path="/articulos" element={<Articulos />} />
+          <Route path="/servicios" element={<Servicios />} />
+          <Route path="/ubicacion" element={<Ubicacion />} />
+          <Route path="/crear-articulos" element={<Crear />} />
+          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/welcome" element={<Home />} />
+          <Route path="/articulo/:id" element={<Articulo />} />
+        </Routes>
+      </section>
+      <Footer />
     </BrowserRouter>
   );
-}
+};
