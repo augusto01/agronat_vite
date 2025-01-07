@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/Login.css';
+import {useAuth} from '../../context/AuthProvider.jsx'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -15,11 +16,11 @@ const storeUserData = (userData) => {
 };
 
 export const Login = () => {
+  const { isLoggedIn, login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,14 +31,13 @@ export const Login = () => {
 
     setLoading(true);
     try {
-
-      //SI EL LOGEO ES EXITOSO OBTENEMOS LOS DATOS DEL USUARIO PARA EL DASHBOARD 
+      // SI EL LOGEO ES EXITOSO OBTENEMOS LOS DATOS DEL USUARIO PARA EL DASHBOARD
       const response = await axios.post('http://localhost:5000/api/user/login', { email, password });
       storeUserData(response.data);
       navigate('/welcome');
-
+      login(); // Llama a la función login del contexto de autenticación
+      console.log('El usuario esta logueado: ', isLoggedIn);
     } catch (error) {
-
       console.error('Error de inicio de sesión:', error); // Log detallado
       alert('Login failed: ' + error.message);
     } finally {
