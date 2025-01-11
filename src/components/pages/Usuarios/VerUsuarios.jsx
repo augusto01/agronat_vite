@@ -4,13 +4,16 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Container, Typography, TextField, Button } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
+import ModalAgregarUsuario from './ModalAgregarUsuario ';
 import ModalUsuario from './ModalUsuario';
+
 
 const VerUsuarios = () => {
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   // Obtener los usuarios desde la API
@@ -50,6 +53,16 @@ const VerUsuarios = () => {
     setOpenModal(true); // Abre el modal
   };
 
+  const handleAddUser = async (newUser) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/user/crear_usuario', newUser);
+      setUsers((prev) => [...prev, response.data.usuario]); // Agrega el usuario nuevo a la lista
+    } catch (error) {
+      console.error('Error al agregar usuario:', error);
+    }
+  };
+  
+
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedUser(null); // Limpia el usuario seleccionado
@@ -79,7 +92,7 @@ const VerUsuarios = () => {
       renderCell: (params) => (
         <Button
           variant="contained"
-          color="success"
+          color="warning"
           startIcon={<VisibilityIcon />}
           onClick={() => handleEdit(params.row)} // Abre el modal con los detalles del usuario
         >
@@ -117,9 +130,19 @@ const VerUsuarios = () => {
         color="primary"
         startIcon={<AddIcon />}
         style={{ margin: '20px 0' }}
+        onClick={() => setOpenAddModal(true)} // Cambia el estado a true para abrir el modal
       >
         Agregar Usuario
       </Button>
+
+      {/* Modal para agregar un usuario */}
+      <ModalAgregarUsuario
+        openModal={openAddModal} // Controla si el modal está abierto
+        handleCloseModal={() => setOpenAddModal(false)} // Cierra el modal
+        handleAddUser={handleAddUser} // Lógica para agregar un usuario nuevo
+      />
+
+
 
       {/* Modal para ver detalle del usuario */}
       {selectedUser && (
@@ -134,6 +157,9 @@ const VerUsuarios = () => {
           }}
         />
       )}
+
+      
+
 
       <div style={{ height: 380, width: '100%' }} className="data-grid">
         {loading ? (
