@@ -13,13 +13,15 @@
 
 const mongoose = require('mongoose');
 
+
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastname: { type: String, required: true },
   nickname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  rol: {type: String},
+  create_at: { type: Date, required: true, default: Date.now },
+  rol: { type: String, required: false }, // Opcional
   domicilio: {
     calle: { type: String, required: true },
     numero: { type: Number, required: true },
@@ -30,6 +32,7 @@ const UserSchema = new mongoose.Schema({
 }, { collection: 'users' });
 
 module.exports = mongoose.model('User', UserSchema);
+
 
 
 

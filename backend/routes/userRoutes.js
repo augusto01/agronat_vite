@@ -24,6 +24,7 @@ router.post('/login', userController.login);
 
 /**===============RUTAS GET============ */
 router.get('/profile',check.auth ,userController.profile)
+router.get('/listar_usuarios' ,userController.listar_usuarios)
 
 
 

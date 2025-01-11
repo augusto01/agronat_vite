@@ -76,6 +76,11 @@
   font-size: 14px;
 }
 
+.MuiDataGrid-columnHeaderTitle {
+  color: black !important; /* Asegura que el texto sea visible */
+}
+
+
 /* Estilo de los botones en las celdas */
 .MuiDataGrid-cell .MuiButtonBase-root {
   padding: 4px 8px;

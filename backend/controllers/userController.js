@@ -185,6 +185,36 @@ const profile = async (req, res) => {
     }
 };
 
+const listar_usuarios = async (req, res) => {
+    try {
+        // Ejecuta la consulta, ordena por fecha descendente y limita a 3 artículos
+        const usuarios = await User.find({})
+                                .sort({ fecha: -1 }) // Ordenamos por fecha descendente
+                                
+        // Si no hay usuarios, responde con un mensaje adecuado
+        if (!usuarios || usuarios.length === 0) {
+            return res.status(404).json({
+                status: 'No se han encontrado artículos',
+            });
+        }
+    
+        // En caso de éxito, devuelve los artículos
+        return res.status(200).json({
+            status: 'success',
+            parametro_url : req.params.ultimos,
+            usuarios
+            
+        });
+    
+    } catch (error) {
+        // Captura y maneja cualquier error
+        return res.status(500).json({
+            status: 'error',
+            mensaje: '' + error
+        });
+    }
+};
+
 
 
 //exportar acciones
@@ -192,5 +222,6 @@ module.exports = {
     userController,
     register,
     login,
-    profile
+    profile,
+    listar_usuarios
 };
