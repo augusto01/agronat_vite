@@ -12,9 +12,7 @@ import { Login } from "../components/pages/Login";
 import { Servicios } from "../components/pages/Servicios";
 import { Ubicacion } from "../components/pages/Ubicacion";
 import { useAuth } from "../context/AuthProvider.jsx";
-import { Home } from "../components/pages/Home";
 import { VerUsuarios } from "../components/pages/Usuarios/VerUsuarios.jsx";
-import { Panel } from "../components/pages/Panel/Panel.jsx";
 import { Layout } from "../components/pages/Layout/Layout.jsx";
 import { Ventas } from "../components/pages/Ventas/Ventas.jsx";
 import { Productos } from "../components/pages/Productos/Productos.jsx";
@@ -45,7 +43,6 @@ export const Rutas = () => {
 
           {/**RUTAS LAYOUT */}
           <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
             <Route path="usuarios" element={<VerUsuarios />} />
             <Route path="ventas" element={<Ventas />} />
             <Route path="productos" element={<Productos/>} />
