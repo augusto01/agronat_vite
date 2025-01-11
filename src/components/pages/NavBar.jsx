@@ -28,17 +28,21 @@ export const NavBar = () => {
         <div>
             {/* Navbar fijo en la parte superior */}
             <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top shadow">
-                  <NavLink to="/welcome" className="bg-dark text-center">
-                        <img src={logo_agronat} alt="Logo Agronat" className="logo" />
-                      </NavLink>
+                <NavLink to="/welcome" className="bg-dark text-center">
+                    <img src={logo_agronat} alt="Logo Agronat" className="logo" />
+                </NavLink>
                 <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-3">
                     <i className="fa fa-bars"></i>
                 </button>
 
                 <ul className="navbar-nav ms-auto">
                     <li className="nav-item mx-3">
-                        <button className="btn btn-danger" onClick={handleLogout}>
-                            <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-200"></i>
+                        <button
+                            className="btn btn-danger d-flex align-items-center"
+                            onClick={handleLogout}
+                            style={{ fontSize: '16px', padding: '10px 15px' }}
+                        >
+                            <i className="bi bi-box-arrow-in-left" style={{ fontSize: '20px', marginRight: '8px' }}></i>
                             Cerrar Sesión
                         </button>
                     </li>
@@ -73,8 +77,6 @@ export const NavBar = () => {
                     </li>
                 </ul>
             </nav>
-
-           
         </div>
     );
 };
