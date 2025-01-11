@@ -12,12 +12,13 @@ import { Login } from "../components/pages/Login";
 import { Servicios } from "../components/pages/Servicios";
 import { Ubicacion } from "../components/pages/Ubicacion";
 import { useAuth } from "../context/AuthProvider.jsx";
-import { VerUsuarios } from "../components/pages/Usuarios/VerUsuarios.jsx";
+import VerUsuarios from '../components/pages/Usuarios/VerUsuarios.jsx';
 import { Layout } from "../components/pages/Layout/Layout.jsx";
 import { Ventas } from "../components/pages/Ventas/Ventas.jsx";
 import { Productos } from "../components/pages/Productos/Productos.jsx";
 import { Proveedores } from "../components/pages/Proveedores/Proveedores.jsx";
 import { Presupuestos } from "../components/pages/Presupuestos/Presupuestos.jsx";
+import { Trabajos } from "../components/pages/Trabajo/Trabajos.jsx";
 
 export const Rutas = () => {
   const { isLoggedIn } = useAuth();
@@ -43,11 +44,12 @@ export const Rutas = () => {
 
           {/**RUTAS LAYOUT */}
           <Route path="/" element={<Layout />}>
-            <Route path="usuarios" element={<VerUsuarios />} />
+            <Route path="usuarios" element={<VerUsuarios/>} />
             <Route path="ventas" element={<Ventas />} />
             <Route path="productos" element={<Productos/>} />
             <Route path="presupuestos" element={<Presupuestos/>} />
             <Route path="proveedores" element={<Proveedores/>} />
+            <Route path="trabajos" element={<Trabajos/>} />
           </Route>
         </Routes>
       </section>
