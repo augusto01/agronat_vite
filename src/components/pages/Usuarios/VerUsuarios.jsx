@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Container, Typography, TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField as MuiTextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import '../../../styles/Usuarios.css';
 
@@ -71,9 +72,18 @@ const VerUsuarios = () => {
     { 
       field: 'actions', 
       headerName: 'Acciones', 
-      width: 240, 
+      width: 400, 
       renderCell: (params) => (
         <div>
+          <Button
+            variant="contained"
+            color="warning" // Color amarillo
+            startIcon={<VisibilityIcon />}
+            onClick={() => handleEdit(params.row.id)}
+            style={{ marginRight: 10 }}
+          >
+            Detalle
+          </Button>
           <Button
             variant="contained"
             color="primary"
