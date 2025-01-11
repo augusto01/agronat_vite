@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   create_at: { type: Date, required: true, default: Date.now },
+  cel: {type: String, required: false},
   rol: { type: String, required: false }, // Opcional
   domicilio: {
     calle: { type: String, required: true },
