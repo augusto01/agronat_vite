@@ -33,10 +33,10 @@ const register = async (req, res) => {
     const params = req.body;
 
     // Validar que los campos necesarios estén presentes
-    if (!params.email || !params.nick || !params.password) {
+    if (!params.email  || !params.password) {
         return res.status(400).json({
             status: "error",
-            message: "Faltan campos requeridos: email, nickname o password.",
+            
         });
     }
 
@@ -47,7 +47,7 @@ const register = async (req, res) => {
         const users = await User.find({
             $or: [
                 { email: params.email.toLowerCase() },
-                { nickname: params.nick.toLowerCase() },
+                //{ nickname: params.nick.toLowerCase() },
             ],
         }).exec();
 

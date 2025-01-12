@@ -2,13 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
 import { Container, Typography, TextField, Button } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
-import ModalAgregarUsuario from './ModalAgregarUsuario ';
-import ModalUsuario from './ModalUsuario';
+import { styled } from '@mui/material/styles';
+import ModalAgregarUsuario from './ModalAgregarUsuario .jsx';
+import ModalUsuario from './ModalUsuario.jsx';
 
+const RotatingIcon = styled(SettingsIcon)(({ theme, rotate }) => ({
+  transition: 'transform 0.5s ease',
+  transform: rotate ? 'rotate(360deg)' : 'rotate(0deg)',
+}));
 
 const VerUsuarios = () => {
+  const [rotateId, setRotateId] = useState(null); // Estado para rastrear qué ícono está girando
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,11 +26,16 @@ const VerUsuarios = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/user/listar_usuarios');
+        const response = await axios.get(
+          'http://localhost:5000/api/user/listar_usuarios'
+        );
         if (Array.isArray(response.data.usuarios)) {
           setUsers(response.data.usuarios);
         } else {
-          console.error("La propiedad 'usuarios' no es un arreglo o no existe:", response.data);
+          console.error(
+            "La propiedad 'usuarios' no es un arreglo o no existe:",
+            response.data
+          );
         }
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -45,7 +56,8 @@ const VerUsuarios = () => {
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase()) ||
       user.rol.toLowerCase().includes(search.toLowerCase()) ||
-      user.cel.toLowerCase().includes(search.toLowerCase())
+      user.cel.toLowerCase().includes(search.toLowerCase()) ||
+      user.dni.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleEdit = (user) => {
@@ -53,15 +65,23 @@ const VerUsuarios = () => {
     setOpenModal(true); // Abre el modal
   };
 
+  const handleButtonClick = (row) => {
+    setRotateId(row.id); // Identifica qué botón está girando
+    setTimeout(() => setRotateId(null), 100); // Restablece después de la animación
+    handleEdit(row); // Llama a la función para abrir el modal
+  };
+
   const handleAddUser = async (newUser) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/user/crear_usuario', newUser);
+      const response = await axios.post(
+        'http://localhost:5000/api/user/register',
+        newUser
+      );
       setUsers((prev) => [...prev, response.data.usuario]); // Agrega el usuario nuevo a la lista
     } catch (error) {
       console.error('Error al agregar usuario:', error);
     }
   };
-  
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -73,6 +93,7 @@ const VerUsuarios = () => {
     { field: 'name', headerName: 'Nombre', width: 100 },
     { field: 'lastname', headerName: 'Apellido', width: 100 },
     { field: 'email', headerName: 'Correo', width: 200 },
+    { field: 'dni', headerName: 'DNI', width: 100 },
     {
       field: 'create_at',
       headerName: 'Fecha de Creación',
@@ -84,19 +105,18 @@ const VerUsuarios = () => {
       },
     },
     { field: 'cel', headerName: 'Celular', width: 150 },
-    { field: 'rol', headerName: 'Rol', width: 150 },
+    { field: 'rol', headerName: 'Rol', width: 100 },
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 200,
+      width: 80,
       renderCell: (params) => (
         <Button
           variant="contained"
-          color="warning"
-          startIcon={<VisibilityIcon />}
-          onClick={() => handleEdit(params.row)} // Abre el modal con los detalles del usuario
+          color="white"
+          onClick={() => handleButtonClick(params.row)} // Llama a la función con animación
         >
-          Detalle
+          <RotatingIcon rotate={rotateId === params.row.id ? 1 : 0} />
         </Button>
       ),
     },
@@ -107,6 +127,7 @@ const VerUsuarios = () => {
     name: user.name,
     lastname: user.lastname,
     email: user.email,
+    dni: user.dni,
     create_at: user.create_at,
     cel: user.cel,
     rol: user.rol,
@@ -135,31 +156,24 @@ const VerUsuarios = () => {
         Agregar Usuario
       </Button>
 
-      {/* Modal para agregar un usuario */}
       <ModalAgregarUsuario
-        openModal={openAddModal} // Controla si el modal está abierto
-        handleCloseModal={() => setOpenAddModal(false)} // Cierra el modal
-        handleAddUser={handleAddUser} // Lógica para agregar un usuario nuevo
+        openModal={openAddModal}
+        handleCloseModal={() => setOpenAddModal(false)}
+        handleAddUser={handleAddUser}
       />
 
-
-
-      {/* Modal para ver detalle del usuario */}
       {selectedUser && (
         <ModalUsuario
           openModal={openModal}
           handleCloseModal={handleCloseModal}
           selectedUser={selectedUser}
-          handleEdit={(updatedUser) => console.log(updatedUser)} // Lógica de guardar cambios
-          handleDelete={(userId) => console.log(userId)} // Lógica de eliminar usuario
+          handleEdit={(updatedUser) => console.log(updatedUser)}
+          handleDelete={(userId) => console.log(userId)}
           handleChange={(field, value) => {
             setSelectedUser((prev) => ({ ...prev, [field]: value }));
           }}
         />
       )}
-
-      
-
 
       <div style={{ height: 380, width: '100%' }} className="data-grid">
         {loading ? (

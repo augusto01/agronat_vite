@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Box, TextField, Button, Typography, Grid } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import axios from 'axios'; // Importamos axios para las peticiones HTTP
 
 const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => {
   const [newUser, setNewUser] = useState({
@@ -23,28 +24,56 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const keys = name.split('.');
-    if (keys.length > 1) {
+
+    // Comprobamos si el nombre del campo tiene un punto (para campos anidados)
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.'); // Separar la parte antes y después del punto
       setNewUser((prev) => ({
         ...prev,
-        [keys[0]]: {
-          ...prev[keys[0]],
-          [keys[1]]: value,
+        [parent]: {
+          ...prev[parent],
+          [child]: value, // Actualizar solo el campo hijo
         },
       }));
     } else {
-      setNewUser((prev) => ({ ...prev, [name]: value }));
+      setNewUser((prev) => ({
+        ...prev,
+        [name]: value, // Actualizar el campo directo
+      }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newUser.password !== newUser.confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
+    
+    const data = {
+        name: newUser.name,
+        lastname: newUser.lastname,
+        email: newUser.email,
+        password: newUser.password,
+        confirmPassword: newUser.confirmPassword,
+        domicilio: {
+            calle: newUser.domicilio.calle,
+            numero: newUser.domicilio.numero,
+            ciudad: newUser.domicilio.ciudad,
+            provincia: newUser.domicilio.provincia,
+            codigo_postal: newUser.domicilio.codigo_postal,
+        },
+        cel: newUser.cel,
+        nickname: newUser.nickname,
+        rol: newUser.rol,
+    };
+    
+    
+    try {
+        const response = await axios.post('http://localhost:5000/api/user/register', data);
+        console.log('Usuario agregado correctamente:', response.data);
+    } catch (error) {
+
+      
+        console.log(data);
+        console.error('Error al agregar usuario:', error);
     }
-    handleAddUser(newUser);
-    handleCloseModal(); // Cierra el modal después de agregar el usuario
   };
 
   return (
@@ -101,34 +130,6 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
               />
               <TextField
                 fullWidth
-                label="Celular"
-                name="cel"
-                value={newUser.cel}
-                onChange={handleChange}
-                margin="normal"
-              />
-              <TextField
-                fullWidth
-                label="Apodo"
-                name="nickname"
-                value={newUser.nickname}
-                onChange={handleChange}
-                margin="normal"
-              />
-              <TextField
-                fullWidth
-                label="Rol"
-                name="rol"
-                value={newUser.rol}
-                onChange={handleChange}
-                margin="normal"
-              />
-            </Grid>
-
-            {/* Segunda columna */}
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
                 label="Contraseña"
                 name="password"
                 type="password"
@@ -145,6 +146,10 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
                 onChange={handleChange}
                 margin="normal"
               />
+            </Grid>
+
+            {/* Segunda columna */}
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Calle"
@@ -182,6 +187,29 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
                 label="Código Postal"
                 name="domicilio.codigo_postal"
                 value={newUser.domicilio.codigo_postal}
+                onChange={handleChange}
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} mt={2}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Celular"
+                name="cel"
+                value={newUser.cel}
+                onChange={handleChange}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Apodo"
+                name="nickname"
+                value={newUser.nickname}
                 onChange={handleChange}
                 margin="normal"
               />
