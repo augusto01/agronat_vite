@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Box, TextField, Button, Typography, Grid } from '@mui/material';
+import { Modal, Box, TextField, Button, Typography, Grid, IconButton, InputAdornment } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import axios from 'axios'; // Importamos axios para las peticiones HTTP
 
 const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => {
@@ -17,10 +19,14 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
       provincia: '',
       codigo_postal: '',
     },
+    dni: '',
     cel: '',
     nickname: '',
     rol: '',
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,21 +65,26 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
             provincia: newUser.domicilio.provincia,
             codigo_postal: newUser.domicilio.codigo_postal,
         },
+        dni: newUser.dni,
         cel: newUser.cel,
         nickname: newUser.nickname,
         rol: newUser.rol,
     };
     
-    
     try {
         const response = await axios.post('http://localhost:5000/api/user/register', data);
         console.log('Usuario agregado correctamente:', response.data);
     } catch (error) {
-
-      
-        console.log(data);
         console.error('Error al agregar usuario:', error);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -98,7 +109,7 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
           gutterBottom
           sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
         >
-          <AddCircleOutlineIcon /> Agregar Nuevo Usuario
+          <AddCircleOutlineIcon /> Nuevo usuario
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
@@ -132,19 +143,37 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
                 fullWidth
                 label="Contraseña"
                 name="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={newUser.password}
                 onChange={handleChange}
                 margin="normal"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility} edge="end">
+                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
                 fullWidth
                 label="Confirmar Contraseña"
                 name="confirmPassword"
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 value={newUser.confirmPassword}
                 onChange={handleChange}
                 margin="normal"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={toggleConfirmPasswordVisibility} edge="end">
+                        {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
 
@@ -179,6 +208,14 @@ const ModalAgregarUsuario = ({ openModal, handleCloseModal, handleAddUser }) => 
                 label="Provincia"
                 name="domicilio.provincia"
                 value={newUser.domicilio.provincia}
+                onChange={handleChange}
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="DNI"
+                name="dni"
+                value={newUser.dni}
                 onChange={handleChange}
                 margin="normal"
               />

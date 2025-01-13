@@ -17,7 +17,7 @@ import {
     <Dialog open={openModal} onClose={handleCloseModal} fullWidth maxWidth="sm">
       {/* Título del modal con la "X" para cerrar */}
       <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        Detalle del Usuario
+        Editar Usuario
         <IconButton
           onClick={handleCloseModal}
           style={{ color: 'gray', position: 'absolute', right: 8, top: 8 }}

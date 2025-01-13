@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../styles/Login.css';
-import {useAuth} from '../../context/AuthProvider.jsx'
+import { useAuth } from '../../context/AuthProvider.jsx';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import axios from 'axios';
 
-// Función para almacenar los datos del usuario en el localStorage
 const storeUserData = (userData) => {
   localStorage.setItem('token', userData.token);
   localStorage.setItem('nombre', userData.nombre);
@@ -21,6 +23,11 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,16 +38,12 @@ export const Login = () => {
 
     setLoading(true);
     try {
-
-      // SI EL LOGEO ES EXITOSO OBTENEMOS LOS DATOS DEL USUARIO PARA EL DASHBOARD
       const response = await axios.post('http://localhost:5000/api/user/login', { email, password });
       storeUserData(response.data);
       navigate('/welcome');
-      login(); // Llama a la función login del contexto de autenticación
-      
-      
+      login();
     } catch (error) {
-      console.error('Error de inicio de sesión:', error); // Log detallado
+      console.error('Error de inicio de sesión:', error);
       alert('Login failed: ' + error.message);
     } finally {
       setLoading(false);
@@ -52,39 +55,49 @@ export const Login = () => {
       <div className="wrap-login">
         <form className="login-form validate-form" onSubmit={handleSubmit}>
           <span className="login-form-title">INGRESAR</span>
-          <div className="wrap-input100" data-validate="Usuario incorrecto">
-            <input
-              className="input100"
+
+          <div className="modal-input" style={{ marginBottom: '16px' }}> {/* Agregado margen aquí */}
+            <TextField
+              label="Email"
               type="email"
-              id="usuario"
-              name="usuario"
-              placeholder="Usuario"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              fullWidth
+              variant="standard"
+              InputProps={{
+                disableUnderline: false,
+              }}
             />
-            <span className="focus-efecto"></span>
           </div>
 
-          <div className="wrap-input100" data-validate="Password incorrecto">
-            <input
-              className="input100"
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Contraseña"
+          <div className="modal-input" style={{ marginBottom: '16px' }}> {/* Agregado margen aquí */}
+            <TextField
+              label="Contraseña"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              fullWidth
+              variant="standard"
+              InputProps={{
+                disableUnderline: false,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility}>
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <span className="focus-efecto"></span>
           </div>
 
           <div className="container-login-form-btn">
             <div className="wrap-login-form-btn">
               <div className="login-form-bgbtn"></div>
               <button type="submit" className="login-form-btn" disabled={loading}>
-                {loading ? 'Cargando...' : 'INICIAR SESIóN'}
+                {loading ? 'Cargando...' : 'INICIAR SESIÓN'}
               </button>
             </div>
           </div>

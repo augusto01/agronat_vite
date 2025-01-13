@@ -6,10 +6,6 @@ import { NavLink } from 'react-router-dom';
 export const Sidebar = () => {
   return (
     <div className="sidebar">
-      <NavLink to="/welcome" className="bg-dark text-center">
-        <img src={logo_agronat} alt="Logo Agronat" className="logo" />
-      </NavLink>
-      
       <div className="list-group list-group-flush">
         <NavLink to="/ventas" className="list-group-item list-group-item-action bg-dark">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-currency-dollar" viewBox="0 0 16 16">

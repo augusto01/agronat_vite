@@ -1,10 +1,10 @@
 /* Sidebar Styles */
 .sidebar {
     width: 250px;
-    height: 100vh;
+    height:auto;
     background-color: #343a40; /* Color del fondo igual al navbar */
     transition: all 0.3s ease-in-out;
-    padding-top: 20px;
+    margin-top: 90px;
   }
   
   .sidebar .logo {

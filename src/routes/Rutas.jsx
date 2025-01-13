@@ -25,10 +25,11 @@ export const Rutas = () => {
 
   return (
     <BrowserRouter>
-      {/**LAYOUT */}
-      {!isLoggedIn && <Header/>}
+      {/** Mostrar Header y Nav solo si no está autenticado */}
+      {!isLoggedIn && <Header />}
       {!isLoggedIn && <Nav />}
-      {/**CONTENIDO CENTRAL */}
+      
+      {/** CONTENIDO CENTRAL */}
       <section id="content" className="content">
         <Routes>
           <Route path="/" element={<Navigate to="/inicio" />} />
@@ -36,21 +37,25 @@ export const Rutas = () => {
           <Route path="/articulos" element={<Articulos />} />
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/ubicacion" element={<Ubicacion />} />
-          <Route path="/crear-articulos" element={<Crear />} />
           <Route path="/contacto" element={<Contacto />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/welcome" element={<Layout />} />
-          <Route path="/articulo/:id" element={<Articulo />} />
+          <Route path="/login" element={isLoggedIn ? <Navigate to="/welcome" /> : <Login />} />
 
-          {/**RUTAS LAYOUT */}
-          <Route path="/" element={<Layout />}>
-            <Route path="usuarios" element={<VerUsuarios/>} />
-            <Route path="ventas" element={<Ventas />} />
-            <Route path="productos" element={<Productos/>} />
-            <Route path="presupuestos" element={<Presupuestos/>} />
-            <Route path="proveedores" element={<Proveedores/>} />
-            <Route path="trabajos" element={<Trabajos/>} />
-          </Route>
+          {/** RUTAS PROTEGIDAS (solo para usuarios logueados) */}
+          {isLoggedIn ? (
+            <Route path="/" element={<Layout />}>
+              <Route path="/welcome" element={<div>Bienvenido, usuario!</div>} />
+              <Route path="/crear-articulos" element={<Crear />} />
+              <Route path="/articulo/:id" element={<Articulo />} />
+              <Route path="/usuarios" element={<VerUsuarios />} />
+              <Route path="/ventas" element={<Ventas />} />
+              <Route path="/productos" element={<Productos />} />
+              <Route path="/presupuestos" element={<Presupuestos />} />
+              <Route path="/proveedores" element={<Proveedores />} />
+              <Route path="/trabajos" element={<Trabajos />} />
+            </Route>
+          ) : (
+            <Route path="*" element={<Navigate to="/inicio" />} />
+          )}
         </Routes>
       </section>
       <Footer />
