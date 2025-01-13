@@ -19,6 +19,7 @@ import { Productos } from "../components/pages/Productos/Productos.jsx";
 import { Proveedores } from "../components/pages/Proveedores/Proveedores.jsx";
 import { Presupuestos } from "../components/pages/Presupuestos/Presupuestos.jsx";
 import { Trabajos } from "../components/pages/Trabajo/Trabajos.jsx";
+import { Home } from "../components/pages/Home.jsx";
 
 export const Rutas = () => {
   const { isLoggedIn } = useAuth();
@@ -43,7 +44,7 @@ export const Rutas = () => {
           {/** RUTAS PROTEGIDAS (solo para usuarios logueados) */}
           {isLoggedIn ? (
             <Route path="/" element={<Layout />}>
-              <Route path="/welcome" element={<div>Bienvenido, usuario!</div>} />
+              <Route path="/welcome" element={<Home/>} />
               <Route path="/crear-articulos" element={<Crear />} />
               <Route path="/articulo/:id" element={<Articulo />} />
               <Route path="/usuarios" element={<VerUsuarios />} />
