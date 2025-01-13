@@ -1,6 +1,6 @@
 import React from 'react';
-import { CheckCircle, AttachMoney, Inventory, Group } from '@mui/icons-material'; // Iconos de MUI
-import '../../styles/Home.css'; // Asegúrate de crear este archivo CSS
+import { AttachMoney, Inventory, Group } from '@mui/icons-material'; // Iconos de MUI
+import '../../styles/Home.css'; // Archivo CSS para estilos
 
 export const Home = () => {
   return (
@@ -10,25 +10,37 @@ export const Home = () => {
       <div className="info-section">
         <h2>Datos Importantes</h2>
         <div className="cards-container">
-          <div className="card">
-            <CheckCircle className="icon" />
-            <h3>Ventas Realizadas</h3>
-            <p>25 Ventas</p>
+          {/* Tarjeta Ventas */}
+          <div className="card ventas">
+            <div className="card-content">
+              <p className="card-value">$0</p>
+              <p className="card-label">Ganancias del día</p>
+            </div>
+            <AttachMoney className="background-icon" />
           </div>
-          <div className="card">
-            <AttachMoney className="icon" />
-            <h3>Ventas Totales</h3>
-            <p>$10,000</p>
+          {/* Tarjeta Ingresos */}
+          <div className="card ingresos">
+            <div className="card-content">
+              <p className="card-value">$66,0128</p>
+              <p className="card-label">Ganancias del mes</p>
+            </div>
+            <AttachMoney className="background-icon" />
           </div>
-          <div className="card">
-            <Inventory className="icon" />
-            <h3>Artículos en Inventario</h3>
-            <p>150 Artículos</p>
+          {/* Tarjeta Inventario */}
+          <div className="card inventario">
+            <div className="card-content">
+              <p className="card-value">150</p>
+              <p className="card-label">Artículos en Inventario</p>
+            </div>
+            <Inventory className="background-icon" />
           </div>
-          <div className="card">
-            <Group className="icon" />
-            <h3>Proveedores Activos</h3>
-            <p>5 Proveedores</p>
+          {/* Tarjeta Proveedores */}
+          <div className="card proveedores">
+            <div className="card-content">
+              <p className="card-value">5</p>
+              <p className="card-label">Proveedores Activos</p>
+            </div>
+            <Group className="background-icon" />
           </div>
         </div>
       </div>

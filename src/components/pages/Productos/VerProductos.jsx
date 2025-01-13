@@ -5,63 +5,62 @@ import { Container, Typography, TextField, Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
-import ModalAgregarUsuario from './ModalAgregarUsuario .jsx';
-import ModalUsuario from './ModalUsuario.jsx';
+import ModalAgregarProducto from './ModalAgregarProducto.jsx';
+import ModalProducto from './ModalProducto.jsx';
 
-const RotatingIcon = styled(SettingsIcon)(({ theme, rotate }) => ({
+const RotatingIcon = styled(SettingsIcon)(({ rotate }) => ({
   transition: 'transform 0.5s ease',
   transform: rotate ? 'rotate(360deg)' : 'rotate(0deg)',
 }));
 
-const VerUsuarios = () => {
+const VerProductos = () => {
   const [rotateId, setRotateId] = useState(null); // Estado para rastrear qué ícono está girando
   const [search, setSearch] = useState('');
-  const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Obtener los usuarios desde la API
+  // Obtener los productos desde la API
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:5000/api/user/listar_usuarios'
+          'http://localhost:5000/api/product/listar_productos'
         );
-        if (Array.isArray(response.data.usuarios)) {
-          setUsers(response.data.usuarios);
+        if (Array.isArray(response.data.productos)) {
+          setProducts(response.data.productos);
         } else {
           console.error(
-            "La propiedad 'usuarios' no es un arreglo o no existe:",
+            "La propiedad 'productos' no es un arreglo o no existe:",
             response.data
           );
         }
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching products:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUsers();
+    fetchProducts();
   }, []);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase()) ||
-      user.rol.toLowerCase().includes(search.toLowerCase()) ||
-      user.cel.toLowerCase().includes(search.toLowerCase()) ||
-      user.dni.toLowerCase().includes(search.toLowerCase())
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(search.toLowerCase()) ||
+      product.category.toLowerCase().includes(search.toLowerCase()) ||
+      product.price.toString().includes(search) ||
+      product.quantity.toString().includes(search)
   );
 
-  const handleEdit = (user) => {
-    setSelectedUser(user); // Guarda el usuario seleccionado
+  const handleEdit = (product) => {
+    setSelectedProduct(product); // Guarda el producto seleccionado
     setOpenModal(true); // Abre el modal
   };
 
@@ -71,29 +70,29 @@ const VerUsuarios = () => {
     handleEdit(row); // Llama a la función para abrir el modal
   };
 
-  const handleAddUser = async (newUser) => {
+  const handleAddProduct = async (newProduct) => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/user/register',
-        newUser
+        'http://localhost:5000/api/product/register',
+        newProduct
       );
-      setUsers((prev) => [...prev, response.data.usuario]); // Agrega el usuario nuevo a la lista
+      setProducts((prev) => [...prev, response.data.producto]); // Agrega el producto nuevo a la lista
     } catch (error) {
-      console.error('Error al agregar usuario:', error);
+      console.error('Error al agregar producto:', error);
     }
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setSelectedUser(null); // Limpia el usuario seleccionado
+    setSelectedProduct(null); // Limpia el producto seleccionado
   };
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 150 },
-    { field: 'name', headerName: 'Nombre', width: 100 },
-    { field: 'lastname', headerName: 'Apellido', width: 100 },
-    { field: 'email', headerName: 'Correo', width: 200 },
-    { field: 'dni', headerName: 'DNI', width: 100 },
+    { field: 'name', headerName: 'Nombre', width: 150 },
+    { field: 'category', headerName: 'Categoría', width: 150 },
+    { field: 'price', headerName: 'Precio', width: 100 },
+    { field: 'quantity', headerName: 'Cantidad', width: 100 },
     {
       field: 'create_at',
       headerName: 'Fecha de Creación',
@@ -104,8 +103,6 @@ const VerUsuarios = () => {
         return formattedDate;
       },
     },
-    { field: 'cel', headerName: 'Celular', width: 150 },
-    { field: 'rol', headerName: 'Rol', width: 100 },
     {
       field: 'actions',
       headerName: 'Acciones',
@@ -113,7 +110,7 @@ const VerUsuarios = () => {
       renderCell: (params) => (
         <Button
           variant="contained"
-          color="white"
+          color="primary"
           onClick={() => handleButtonClick(params.row)} // Llama a la función con animación
         >
           <RotatingIcon rotate={rotateId === params.row.id ? 1 : 0} />
@@ -122,24 +119,22 @@ const VerUsuarios = () => {
     },
   ];
 
-  const rows = filteredUsers.map((user, index) => ({
-    id: user._id || index,
-    name: user.name,
-    lastname: user.lastname,
-    email: user.email,
-    dni: user.dni,
-    create_at: user.create_at,
-    cel: user.cel,
-    rol: user.rol,
+  const rows = filteredProducts.map((product, index) => ({
+    id: product._id || index,
+    name: product.name,
+    category: product.category,
+    price: product.price,
+    quantity: product.quantity,
+    create_at: product.create_at,
   }));
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom className="title">
-        Usuarios Registrados ({filteredUsers.length})
+        Productos Registrados ({filteredProducts.length})
       </Typography>
       <TextField
-        label="Buscar usuario"
+        label="Buscar producto"
         variant="outlined"
         value={search}
         onChange={handleSearchChange}
@@ -153,24 +148,24 @@ const VerUsuarios = () => {
         style={{ margin: '20px 0' }}
         onClick={() => setOpenAddModal(true)} // Cambia el estado a true para abrir el modal
       >
-        Agregar Usuario
-      </Button>a
+        Agregar Producto
+      </Button>
 
-      <ModalAgregarUsuario
+      <ModalAgregarProducto
         openModal={openAddModal}
         handleCloseModal={() => setOpenAddModal(false)}
-        handleAddUser={handleAddUser}
+        handleAddProduct={handleAddProduct}
       />
 
-      {selectedUser && (
-        <ModalUsuario
+      {selectedProduct && (
+        <ModalProducto
           openModal={openModal}
           handleCloseModal={handleCloseModal}
-          selectedUser={selectedUser}
-          handleEdit={(updatedUser) => console.log(updatedUser)}
-          handleDelete={(userId) => console.log(userId)}
+          selectedProduct={selectedProduct}
+          handleEdit={(updatedProduct) => console.log(updatedProduct)}
+          handleDelete={(productId) => console.log(productId)}
           handleChange={(field, value) => {
-            setSelectedUser((prev) => ({ ...prev, [field]: value }));
+            setSelectedProduct((prev) => ({ ...prev, [field]: value }));
           }}
         />
       )}
@@ -178,7 +173,7 @@ const VerUsuarios = () => {
       <div style={{ height: 380, width: '100%' }} className="data-grid">
         {loading ? (
           <Typography variant="h6" color="primary">
-            Cargando usuarios...
+            Cargando productos...
           </Typography>
         ) : (
           <DataGrid rows={rows} columns={columns} pageSize={5} />
@@ -188,4 +183,4 @@ const VerUsuarios = () => {
   );
 };
 
-export default VerUsuarios;
+export default VerProductos;

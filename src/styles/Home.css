@@ -1,89 +1,93 @@
+/* General */
 .home-container {
     padding: 20px;
-    margin-bottom: 80px; /* Espacio para evitar solapamiento con el footer */
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
   }
   
   .welcome-message {
-    font-size: 2rem;
-    color: #333;
     text-align: center;
-    margin-bottom: 30px;
+    color: #333;
   }
   
   .info-section {
-    margin-bottom: 30px;
+    margin-top: 20px;
   }
   
   .cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: space-between;
   }
   
+  /* Tarjetas */
   .card {
-    background: #ffffff;
+    flex: 1 1 calc(25% - 20px);
+    position: relative;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
     padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 150px; /* Aumenta la altura mínima */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
   }
   
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  .card-content {
+    z-index: 1;
   }
   
-  .icon {
-    font-size: 3rem;
-    color: #4caf50;
-    margin-bottom: 10px;
+  .card-value {
+    font-size: 2.5rem; /* Tamaño aumentado */
+    margin: 0;
   }
   
-  .card h3 {
+  .card-label {
+    margin: 10px 0 0;
     font-size: 1.2rem;
-    margin: 10px 0;
-    color: #555;
   }
   
-  .card p {
-    font-size: 1rem;
-    color: #777;
+  .background-icon {
+    position: absolute;
+    font-size: 120px; /* Tamaño aumentado del ícono */
+    color: rgba(255, 255, 255, 0.15); /* Opacidad reducida */
+    right: 10px; /* Más cerca del borde derecho */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
   }
   
+  /* Colores específicos para cada tarjeta */
+  .ventas {
+    background-color: #2ecc71; /* Verde */
+  }
+  
+  .ingresos {
+    background-color: #3498db; /* Azul */
+  }
+  
+  .inventario {
+    background-color: #e67e22; /* Naranja */
+  }
+  
+  .proveedores {
+    background-color: #9b59b6; /* Morado */
+  }
+  
+  /* Información adicional */
   .additional-info {
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .additional-info h2 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: #333;
+    margin-top: 30px;
   }
   
   .additional-info ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
   }
   
   .additional-info li {
     font-size: 1rem;
-    color: #555;
-    margin-bottom: 10px;
-    position: relative;
-    padding-left: 20px;
-  }
-  
-  .additional-info li:before {
-    content: '•';
-    position: absolute;
-    left: 0;
-    color: #4caf50;
-    font-size: 1.5rem;
-    line-height: 1;
+    margin: 5px 0;
   }
   

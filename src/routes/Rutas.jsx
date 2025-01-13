@@ -15,11 +15,11 @@ import { useAuth } from "../context/AuthProvider.jsx";
 import VerUsuarios from '../components/pages/Usuarios/VerUsuarios.jsx';
 import { Layout } from "../components/pages/Layout/Layout.jsx";
 import { Ventas } from "../components/pages/Ventas/Ventas.jsx";
-import { Productos } from "../components/pages/Productos/Productos.jsx";
 import { Proveedores } from "../components/pages/Proveedores/Proveedores.jsx";
 import { Presupuestos } from "../components/pages/Presupuestos/Presupuestos.jsx";
 import { Trabajos } from "../components/pages/Trabajo/Trabajos.jsx";
 import { Home } from "../components/pages/Home.jsx";
+import VerProductos from '../components/pages/Productos/VerProductos.jsx';
 
 export const Rutas = () => {
   const { isLoggedIn } = useAuth();
@@ -49,7 +49,7 @@ export const Rutas = () => {
               <Route path="/articulo/:id" element={<Articulo />} />
               <Route path="/usuarios" element={<VerUsuarios />} />
               <Route path="/ventas" element={<Ventas />} />
-              <Route path="/productos" element={<Productos />} />
+              <Route path="/productos" element={<VerProductos />} />              
               <Route path="/presupuestos" element={<Presupuestos />} />
               <Route path="/proveedores" element={<Proveedores />} />
               <Route path="/trabajos" element={<Trabajos />} />
