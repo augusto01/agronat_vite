@@ -2,7 +2,7 @@ import React from 'react'
 
 export const ModalAgregarProducto = () => {
   return (
-    <div>ModalAgregarProducto</div>
+    <div></div>
   )
 }
 

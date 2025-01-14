@@ -154,7 +154,7 @@ const VerUsuarios = () => {
         onClick={() => setOpenAddModal(true)} // Cambia el estado a true para abrir el modal
       >
         Agregar Usuario
-      </Button>a
+      </Button>
 
       <ModalAgregarUsuario
         openModal={openAddModal}

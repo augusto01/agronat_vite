@@ -18,6 +18,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes.js');
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ connectDB();
 
 
 app.use('/api/user', userRoutes); // RUTAS USUARIO
+app.use('/api/product', productRoutes); // RUTAS PRODUCTO
 
 const puerto = 5000;
 app.listen(puerto, () => {

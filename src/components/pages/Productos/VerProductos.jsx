@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 import ModalAgregarProducto from './ModalAgregarProducto.jsx';
 import ModalProducto from './ModalProducto.jsx';
+import '../../../styles/VerProductos.css'; // Archivo CSS para estilos personalizados
 
 const RotatingIcon = styled(SettingsIcon)(({ rotate }) => ({
   transition: 'transform 0.5s ease',
@@ -14,7 +15,7 @@ const RotatingIcon = styled(SettingsIcon)(({ rotate }) => ({
 }));
 
 const VerProductos = () => {
-  const [rotateId, setRotateId] = useState(null); // Estado para rastrear qué ícono está girando
+  const [rotateId, setRotateId] = useState(null);
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,14 +61,14 @@ const VerProductos = () => {
   );
 
   const handleEdit = (product) => {
-    setSelectedProduct(product); // Guarda el producto seleccionado
-    setOpenModal(true); // Abre el modal
+    setSelectedProduct(product);
+    setOpenModal(true);
   };
 
   const handleButtonClick = (row) => {
-    setRotateId(row.id); // Identifica qué botón está girando
-    setTimeout(() => setRotateId(null), 100); // Restablece después de la animación
-    handleEdit(row); // Llama a la función para abrir el modal
+    setRotateId(row.id);
+    setTimeout(() => setRotateId(null), 100);
+    handleEdit(row);
   };
 
   const handleAddProduct = async (newProduct) => {
@@ -76,7 +77,7 @@ const VerProductos = () => {
         'http://localhost:5000/api/product/register',
         newProduct
       );
-      setProducts((prev) => [...prev, response.data.producto]); // Agrega el producto nuevo a la lista
+      setProducts((prev) => [...prev, response.data.producto]);
     } catch (error) {
       console.error('Error al agregar producto:', error);
     }
@@ -84,18 +85,22 @@ const VerProductos = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setSelectedProduct(null); // Limpia el producto seleccionado
+    setSelectedProduct(null);
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 150 },
-    { field: 'name', headerName: 'Nombre', width: 150 },
-    { field: 'category', headerName: 'Categoría', width: 150 },
-    { field: 'price', headerName: 'Precio', width: 100 },
-    { field: 'quantity', headerName: 'Cantidad', width: 100 },
+    { field: 'id', headerName: 'CODIGO', width: 100 },
+    { field: 'name', headerName: 'ARTICULO', width: 100 },
+    { field: 'category', headerName: 'CATEGORIA', width: 100 },
+    { field: 'quantity', headerName: 'CANTIDAD', width: 100 },
+    { field: 'medida', headerName: 'MEDIDA', width: 100 },
+    { field: 'provider', headerName: 'PROVEEDOR', width: 150 },
+    { field: 'price_siva', headerName: 'PRECIO S/IVA', width: 120 },
+    { field: 'price_usd', headerName: 'PRECIO USD', width: 120 },
+    { field: 'price_final', headerName: 'PRECIO FINAL', width: 120 },
     {
       field: 'create_at',
-      headerName: 'Fecha de Creación',
+      headerName: 'ULTIMA ACTUALIZACION',
       width: 150,
       renderCell: (params) => {
         const date = new Date(params.value);
@@ -105,13 +110,13 @@ const VerProductos = () => {
     },
     {
       field: 'actions',
-      headerName: 'Acciones',
-      width: 80,
+      headerName: 'GESTIONAR',
+      width: 100,
       renderCell: (params) => (
         <Button
           variant="contained"
           color="primary"
-          onClick={() => handleButtonClick(params.row)} // Llama a la función con animación
+          onClick={() => handleButtonClick(params.row)}
         >
           <RotatingIcon rotate={rotateId === params.row.id ? 1 : 0} />
         </Button>
@@ -119,14 +124,25 @@ const VerProductos = () => {
     },
   ];
 
-  const rows = filteredProducts.map((product, index) => ({
+  const rows = (filteredProducts || []).map((product, index) => ({
     id: product._id || index,
-    name: product.name,
-    category: product.category,
-    price: product.price,
-    quantity: product.quantity,
-    create_at: product.create_at,
+    name: product.name || '', // Asegúrate de que exista un valor por defecto
+    category: product.category || '',
+    quantity: product.quantity || 0,
+    medida: product.medida || '',
+    provider: product.provider || '',
+    price_siva: product.price_siva || 0,
+    price_usd: product.price_usd || 0,
+    price_final: product.price_final || 0,
+    create_at: product.create_at || '',
   }));
+  
+  const getRowClassName = (params) => {
+    const stock = params.row.quantity;
+    if (stock > 100) return 'stock-alto'; // Verde
+    if (stock > 50) return 'stock-medio'; // Amarillo
+    return 'stock-bajo'; // Rojo
+  };
 
   return (
     <Container>
@@ -146,7 +162,7 @@ const VerProductos = () => {
         color="primary"
         startIcon={<AddIcon />}
         style={{ margin: '20px 0' }}
-        onClick={() => setOpenAddModal(true)} // Cambia el estado a true para abrir el modal
+        onClick={() => setOpenAddModal(true)}
       >
         Agregar Producto
       </Button>
@@ -162,11 +178,6 @@ const VerProductos = () => {
           openModal={openModal}
           handleCloseModal={handleCloseModal}
           selectedProduct={selectedProduct}
-          handleEdit={(updatedProduct) => console.log(updatedProduct)}
-          handleDelete={(productId) => console.log(productId)}
-          handleChange={(field, value) => {
-            setSelectedProduct((prev) => ({ ...prev, [field]: value }));
-          }}
         />
       )}
 
@@ -176,7 +187,12 @@ const VerProductos = () => {
             Cargando productos...
           </Typography>
         ) : (
-          <DataGrid rows={rows} columns={columns} pageSize={5} />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            getRowClassName={getRowClassName}
+          />
         )}
       </div>
     </Container>
