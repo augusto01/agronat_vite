@@ -1,12 +1,74 @@
-.stock-alto {
-    background-color: #d4edda; /* Verde claro */
-  }
-  
-  .stock-medio {
-    background-color: #fff3cd; /* Amarillo claro */
-  }
-  
-  .stock-bajo {
-    background-color: #f8d7da; /* Rojo claro */
-  }
-  
+/* Contenedor principal que ocupa toda la pantalla menos el footer */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  height: 85%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden; /* Evita desbordamientos */
+}
+
+/* Contenedor del DataGrid con desplazamiento vertical */
+.data-grid-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 60px; /* Ajusta este valor al alto del footer */
+}
+
+/* Estilo para el DataGrid */
+.data-grid {
+  background-color: white; /* Color de fondo oscuro */
+  color: black; /* Color de fuente claro */
+  border: 1px solid #444444; /* Bordes para el DataGrid */
+  height: 100%; /* Asegura que ocupe todo el espacio disponible */
+  border-radius: 4px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+/* Estilos para las celdas */
+.data-grid .MuiDataGrid-cell {
+  color: black; /* Color de texto de las celdas */
+  border-bottom: 1px solid #444444; /* Línea divisoria en las filas */
+}
+
+/* Estilo para los encabezados */
+.data-grid .MuiDataGrid-columnHeaders {
+  background-color: #333333; /* Fondo oscuro para encabezados */
+  color: black !important; /* Color blanco para el texto */
+  font-weight: bold;
+  font-size: 14px; /* Aumenta un poco el tamaño del texto */
+  border-bottom: 2px solid #444444; /* Línea más gruesa debajo de los encabezados */
+  text-transform: uppercase; /* Transforma los encabezados a mayúsculas */
+}
+
+/* Resalta las filas al pasar el mouse */
+/* Resalta las filas al pasar el mouse */
+.data-grid .MuiDataGrid-row:hover {
+  background-color: #a6d65f !important; /* Fondo suave y moderno al pasar el mouse */
+  transition: background-color 0.3s ease; /* Transición suave para el hover */
+}
+
+/* Colores según el stock */
+.row-stock-alto {
+  background-color: #4caf50; /* Verde suave y moderno */
+  color: #f0f0f0; /* Texto claro para mayor contraste */
+}
+
+.row-stock-medio {
+  background-color: #f0b400; /* Amarillo cálido y suave */
+  color: #f0f0f0; /* Texto claro */
+}
+
+.row-stock-bajo {
+  background-color: #d32f2f; /* Rojo suave y sofisticado */
+  color: #f0f0f0; /* Texto claro */
+}
+
+/* Estilo para el texto de carga */
+.loading {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff; /* Texto blanco */
+  margin: auto;
+}

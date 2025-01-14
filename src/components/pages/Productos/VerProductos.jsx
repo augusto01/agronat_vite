@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
-import { Container, Typography, TextField, Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 import ModalAgregarProducto from './ModalAgregarProducto.jsx';
 import ModalProducto from './ModalProducto.jsx';
@@ -15,12 +14,9 @@ const RotatingIcon = styled(SettingsIcon)(({ rotate }) => ({
 }));
 
 const VerProductos = () => {
-  const [rotateId, setRotateId] = useState(null);
-  const [search, setSearch] = useState('');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Obtener los productos desde la API
@@ -48,47 +44,9 @@ const VerProductos = () => {
     fetchProducts();
   }, []);
 
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const filteredProducts = products.filter((product) => {
-    const codeString = product.code ? product.code.toString().toLowerCase() : ''; // Verifica si existe product.code
-    const idString = product._id ? product._id.toString().toLowerCase() : ''; // Verifica si existe product._id
-    const nameString = product.name ? product.name.toLowerCase() : ''; // Verifica si existe product.name
-    const categoryString = product.category ? product.category.toLowerCase() : ''; // Verifica si existe product.category
-    const quantityString = product.quantity ? product.quantity.toString() : ''; // Verifica si existe product.quantity
-
-    return (
-      nameString.includes(search.toLowerCase()) ||
-      idString.includes(search.toLowerCase()) ||
-      codeString.includes(search.toLowerCase()) ||
-      categoryString.includes(search.toLowerCase()) ||
-      quantityString.includes(search)
-    );
-  });
-
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setOpenModal(true);
-  };
-
-  const handleButtonClick = (row) => {
-    setRotateId(row.id);
-    setTimeout(() => setRotateId(null), 100);
-    handleEdit(row);
-  };
-
-  const handleAddProduct = async (newProduct) => {
-    try {
-      const response = await axios.post(
-        'http://localhost:5000/api/product/register',
-        newProduct
-      );
-      setProducts((prev) => [...prev, response.data.producto]);
-    } catch (error) {
-      console.error('Error al agregar producto:', error);
-    }
   };
 
   const handleCloseModal = () => {
@@ -100,16 +58,16 @@ const VerProductos = () => {
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'ARTICULO', width: 200 },
     { field: 'category', headerName: 'CATEGORIA', width: 100 },
-    { field: 'quantity', headerName: 'CANTIDAD', width: 100 },
+    { field: 'quantity', headerName: 'STOCK', width: 100 },
     { field: 'medida', headerName: 'MEDIDA', width: 60 },
     { field: 'provider', headerName: 'PROVEEDOR', width: 150 },
-    { field: 'price_siva', headerName: 'PRECIO S/IVA', width: 120 },
-    { field: 'price_usd', headerName: 'PRECIO USD', width: 120 },
-    { field: 'price_final', headerName: 'PRECIO FINAL', width: 120 },
+    { field: 'price_siva', headerName: 'SIN IVA', width: 90 },
+    { field: 'price_usd', headerName: ' USD', width: 90 },
+    { field: 'price_final', headerName: ' FINAL', width: 90 },
     {
       field: 'create_at',
-      headerName: 'ULTIMA ACTUALIZACION',
-      width: 150,
+      headerName: 'ACTUALIZACION',
+      width: 100,
       renderCell: (params) => {
         const date = new Date(params.value);
         const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -118,30 +76,30 @@ const VerProductos = () => {
     },
     {
       field: 'actions',
-      headerName: 'GESTIONAR',
-      width: 100,
+      headerName: 'ACCION',
+      width: 90,
       renderCell: (params) => (
         <Button
           variant="contained"
           color="primary"
-          onClick={() => handleButtonClick(params.row)}
+          onClick={() => handleEdit(params.row)}
         >
-          <RotatingIcon rotate={rotateId === params.row.id ? 1 : 0} />
+          <RotatingIcon />
         </Button>
       ),
     },
   ];
 
-  const rows = (filteredProducts || []).map((product, index) => ({
-    id: product.id || index,
-    name: product.name || '', // Asegúrate de que exista un valor por defecto
+  const rows = (products || []).map((product, index) => ({
+    id: product.code || index,
+    name: product.name || '',
     category: product.category || '',
     quantity: product.quantity || 0,
     medida: product.medida || '',
     provider: product.provider || '',
-    price_siva: product.price_siva ? `$${product.price_siva.toFixed(2)}` : '$0.00', // Precio en moneda local
-    price_usd: product.price_usd ? `USD ${product.price_usd.toFixed(2)}` : 'USD 0.00', // Precio en dólares
-    price_final: product.price_final ? `$${product.price_final.toFixed(2)}` : '$0.00', // Precio final con IVA
+    price_siva: product.price_siva ? `$${product.price_siva.toFixed(2)}` : '$0.00',
+    price_usd: product.price_usd ? `USD ${product.price_usd.toFixed(2)}` : 'USD 0.00',
+    price_final: product.price_final ? `$${product.price_final.toFixed(2)}` : '$0.00',
     create_at: product.create_at || '',
   }));
 
@@ -153,54 +111,29 @@ const VerProductos = () => {
   };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom className="title">
-        Productos Registrados ({filteredProducts.length})
-      </Typography>
-      <TextField
-        label="Buscar producto"
-        variant="outlined"
-        value={search}
-        onChange={handleSearchChange}
-        fullWidth
-        className="search-input"
-      />
-      <Button
-        variant="contained"
-        color="success"
-        startIcon={<AddIcon />}
-        style={{ margin: '20px 0' }}
-        onClick={() => setOpenAddModal(true)}
-      >
-        Agregar Producto
-      </Button>
-      <ModalAgregarProducto
-        openModal={openAddModal}
-        handleCloseModal={() => setOpenAddModal(false)}
-        handleAddProduct={handleAddProduct}
-      />
-      {selectedProduct && (
-        <ModalProducto
-          openModal={openModal}
-          handleCloseModal={handleCloseModal}
-          selectedProduct={selectedProduct}
-        />
-      )}
-      <div style={{ height: 380, width: '100%' }} className="data-grid">
-        {loading ? (
-          <Typography variant="h6" color="primary">
-            Cargando productos...
-          </Typography>
-        ) : (
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            getRowClassName={getRowClassName}
+    <div className="main-container">
+      {loading ? (
+        <div className="loading">Cargando productos...</div>
+      ) : (
+        <>
+          <ModalProducto
+            openModal={openModal}
+            handleCloseModal={handleCloseModal}
+            selectedProduct={selectedProduct}
           />
-        )}
-      </div>
-    </Container>
+          <div className="data-grid-container">
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              getRowClassName={(params) => `row-${getRowClassName(params)}`}
+              className="data-grid"
+              disableSelectionOnClick
+            />
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
