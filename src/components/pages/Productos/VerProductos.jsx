@@ -53,15 +53,20 @@ const VerProductos = () => {
   };
 
   const filteredProducts = products.filter((product) => {
-    const idString = product._id ? product._id.toString().toLowerCase() : ''; // Convierte _id a string si existe
+    const codeString = product.code ? product.code.toString().toLowerCase() : ''; // Verifica si existe product.code
+    const idString = product._id ? product._id.toString().toLowerCase() : ''; // Verifica si existe product._id
+    const nameString = product.name ? product.name.toLowerCase() : ''; // Verifica si existe product.name
+    const categoryString = product.category ? product.category.toLowerCase() : ''; // Verifica si existe product.category
+    const quantityString = product.quantity ? product.quantity.toString() : ''; // Verifica si existe product.quantity
+
     return (
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
+      nameString.includes(search.toLowerCase()) ||
       idString.includes(search.toLowerCase()) ||
-      product.category.toLowerCase().includes(search.toLowerCase()) ||
-      product.quantity.toString().includes(search)
+      codeString.includes(search.toLowerCase()) ||
+      categoryString.includes(search.toLowerCase()) ||
+      quantityString.includes(search)
     );
   });
-  
 
   const handleEdit = (product) => {
     setSelectedProduct(product);
@@ -92,11 +97,11 @@ const VerProductos = () => {
   };
 
   const columns = [
-    { field: 'id', headerName: 'CODIGO', width: 100 },
-    { field: 'name', headerName: 'ARTICULO', width: 100 },
+    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'name', headerName: 'ARTICULO', width: 200 },
     { field: 'category', headerName: 'CATEGORIA', width: 100 },
     { field: 'quantity', headerName: 'CANTIDAD', width: 100 },
-    { field: 'medida', headerName: 'MEDIDA', width: 100 },
+    { field: 'medida', headerName: 'MEDIDA', width: 60 },
     { field: 'provider', headerName: 'PROVEEDOR', width: 150 },
     { field: 'price_siva', headerName: 'PRECIO S/IVA', width: 120 },
     { field: 'price_usd', headerName: 'PRECIO USD', width: 120 },
@@ -128,7 +133,7 @@ const VerProductos = () => {
   ];
 
   const rows = (filteredProducts || []).map((product, index) => ({
-    id: product._id || index,
+    id: product.id || index,
     name: product.name || '', // Asegúrate de que exista un valor por defecto
     category: product.category || '',
     quantity: product.quantity || 0,
@@ -139,8 +144,7 @@ const VerProductos = () => {
     price_final: product.price_final ? `$${product.price_final.toFixed(2)}` : '$0.00', // Precio final con IVA
     create_at: product.create_at || '',
   }));
-  
-  
+
   const getRowClassName = (params) => {
     const stock = params.row.quantity;
     if (stock > 100) return 'stock-alto'; // Verde
@@ -163,20 +167,18 @@ const VerProductos = () => {
       />
       <Button
         variant="contained"
-        color="primary"
+        color="success"
         startIcon={<AddIcon />}
         style={{ margin: '20px 0' }}
         onClick={() => setOpenAddModal(true)}
       >
         Agregar Producto
       </Button>
-
       <ModalAgregarProducto
         openModal={openAddModal}
         handleCloseModal={() => setOpenAddModal(false)}
         handleAddProduct={handleAddProduct}
       />
-
       {selectedProduct && (
         <ModalProducto
           openModal={openModal}
@@ -184,7 +186,6 @@ const VerProductos = () => {
           selectedProduct={selectedProduct}
         />
       )}
-
       <div style={{ height: 380, width: '100%' }} className="data-grid">
         {loading ? (
           <Typography variant="h6" color="primary">

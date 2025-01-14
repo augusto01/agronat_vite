@@ -148,7 +148,7 @@ const VerUsuarios = () => {
       />
       <Button
         variant="contained"
-        color="primary"
+        color="success"
         startIcon={<AddIcon />}
         style={{ margin: '20px 0' }}
         onClick={() => setOpenAddModal(true)} // Cambia el estado a true para abrir el modal
