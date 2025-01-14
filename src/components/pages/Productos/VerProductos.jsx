@@ -52,12 +52,16 @@ const VerProductos = () => {
     setSearch(e.target.value);
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
+  const filteredProducts = products.filter((product) => {
+    const idString = product._id ? product._id.toString().toLowerCase() : ''; // Convierte _id a string si existe
+    return (
       product.name.toLowerCase().includes(search.toLowerCase()) ||
+      idString.includes(search.toLowerCase()) ||
       product.category.toLowerCase().includes(search.toLowerCase()) ||
       product.quantity.toString().includes(search)
-  );
+    );
+  });
+  
 
   const handleEdit = (product) => {
     setSelectedProduct(product);
@@ -130,11 +134,12 @@ const VerProductos = () => {
     quantity: product.quantity || 0,
     medida: product.medida || '',
     provider: product.provider || '',
-    price_siva: product.price_siva || 0,
-    price_usd: product.price_usd || 0,
-    price_final: product.price_final || 0,
+    price_siva: product.price_siva ? `$${product.price_siva.toFixed(2)}` : '$0.00', // Precio en moneda local
+    price_usd: product.price_usd ? `USD ${product.price_usd.toFixed(2)}` : 'USD 0.00', // Precio en dólares
+    price_final: product.price_final ? `$${product.price_final.toFixed(2)}` : '$0.00', // Precio final con IVA
     create_at: product.create_at || '',
   }));
+  
   
   const getRowClassName = (params) => {
     const stock = params.row.quantity;
