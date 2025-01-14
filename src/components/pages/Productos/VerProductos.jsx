@@ -56,7 +56,6 @@ const VerProductos = () => {
     (product) =>
       product.name.toLowerCase().includes(search.toLowerCase()) ||
       product.category.toLowerCase().includes(search.toLowerCase()) ||
-      product.price.toString().includes(search) ||
       product.quantity.toString().includes(search)
   );
 
