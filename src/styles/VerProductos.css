@@ -18,7 +18,7 @@
 
 /* Estilo para el DataGrid */
 .data-grid {
-  background-color: white; /* Color de fondo oscuro */
+  background-color: #a6d65f; /* Color de fondo oscuro */
   color: black; /* Color de fuente claro */
   border: 1px solid #444444; /* Bordes para el DataGrid */
   height: 100%; /* Asegura que ocupe todo el espacio disponible */
@@ -41,8 +41,6 @@
   border-bottom: 2px solid #444444; /* Línea más gruesa debajo de los encabezados */
   text-transform: uppercase; /* Transforma los encabezados a mayúsculas */
 }
-
-/* Resalta las filas al pasar el mouse */
 /* Resalta las filas al pasar el mouse */
 .data-grid .MuiDataGrid-row:hover {
   background-color: #a6d65f !important; /* Fondo suave y moderno al pasar el mouse */
