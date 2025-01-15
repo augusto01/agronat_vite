@@ -5,17 +5,17 @@ import { Button, Typography, Container } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { styled } from '@mui/material/styles';
 import ModalProducto from './ModalProducto.jsx';
-import '../../../styles/VerProductos.css'; // Asegúrate de que el archivo CSS esté correctamente importado
+import '../../../styles/VerProductos.css';
 
 // Componente para el ícono que gira
 const RotatingIcon = styled(SettingsIcon)(({ theme, rotate }) => ({
   transition: 'transform 0.5s ease',
   transform: rotate ? 'rotate(360deg)' : 'rotate(0deg)',
-  color: '#ffffff', // Color del ícono de la tuerca
+  color: '#ffffff',
 }));
 
 const VerProductos = () => {
-  const [rotateId, setRotateId] = useState(null); // Estado para rastrear qué ícono está girando
+  const [rotateId, setRotateId] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -25,16 +25,11 @@ const VerProductos = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:5000/api/product/listar_productos'
-        );
+        const response = await axios.get('http://localhost:5000/api/product/listar_productos');
         if (Array.isArray(response.data.productos)) {
           setProducts(response.data.productos);
         } else {
-          console.error(
-            "La propiedad 'productos' no es un arreglo o no existe:",
-            response.data
-          );
+          console.error("La propiedad 'productos' no es un arreglo o no existe:", response.data);
         }
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -47,19 +42,19 @@ const VerProductos = () => {
   }, []);
 
   const handleEdit = (product) => {
-    setSelectedProduct(product); // Guarda el producto seleccionado
-    setOpenModal(true); // Abre el modal
+    setSelectedProduct(product);
+    setOpenModal(true);
   };
 
   const handleButtonClick = (row) => {
-    setRotateId(row.id); // Establece el ID del botón girando
-    setTimeout(() => setRotateId(null), 500); // Restablece después de la animación
-    handleEdit(row); // Abre el modal
+    setRotateId(row.id);
+    setTimeout(() => setRotateId(null), 500);
+    handleEdit(row);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setSelectedProduct(null); // Limpia el producto seleccionado
+    setSelectedProduct(null);
   };
 
   const columns = [
@@ -68,7 +63,7 @@ const VerProductos = () => {
     { field: 'category', headerName: 'CATEGORÍA', width: 90 },
     { field: 'quantity', headerName: 'STOCK', width: 90 },
     { field: 'medida', headerName: 'MEDIDA', width: 80 },
-    { field: 'provider', headerName: 'PROVEEDOR', width: 150 },
+    { field: 'provider', headerName: 'PROVEEDOR', width: 100 },
     { field: 'price_siva', headerName: 'SIN IVA', width: 90 },
     { field: 'price_usd', headerName: 'USD', width: 90 },
     { field: 'price_final', headerName: 'FINAL', width: 90 },
@@ -85,14 +80,9 @@ const VerProductos = () => {
     {
       field: 'actions',
       headerName: 'ACCIONES',
-      width: 100,
+      width: 80,
       renderCell: (params) => (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleButtonClick(params.row)} // Llama a la función con animación
-          className="action-button" // Añadido para personalizar estilos
-        >
+        <Button variant="contained" color="primary" onClick={() => handleButtonClick(params.row)}>
           <RotatingIcon rotate={rotateId === params.row.id ? 1 : 0} />
         </Button>
       ),
@@ -112,11 +102,6 @@ const VerProductos = () => {
     create_at: product.create_at || '',
   }));
 
-  // Función para asignar clases alternadas a las filas
-  const getRowClassName = (params) => {
-    return params.index % 2 === 0 ? 'even-row' : 'odd-row';
-  };
-
   return (
     <Container className="main-container">
       <Typography variant="h4" gutterBottom>
@@ -129,23 +114,13 @@ const VerProductos = () => {
               Cargando productos...
             </Typography>
           ) : (
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={5}
-              getRowClassName={getRowClassName} // Aplicamos la función para los colores alternados
-              className="data-grid"
-            />
+            <DataGrid rows={rows} columns={columns} pageSize={5} className="data-grid" />
           )}
         </div>
       </div>
 
       {selectedProduct && (
-        <ModalProducto
-          openModal={openModal}
-          handleCloseModal={handleCloseModal}
-          selectedProduct={selectedProduct}
-        />
+        <ModalProducto openModal={openModal} handleCloseModal={handleCloseModal} selectedProduct={selectedProduct} />
       )}
     </Container>
   );
