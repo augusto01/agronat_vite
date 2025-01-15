@@ -1,5 +1,6 @@
 import React from 'react'
 import logo_agronat from '../../assets/agronat-logo.png';
+import '../../styles/Footer.css'
 
 
 export const Footer = () => {

@@ -5,6 +5,7 @@ import { Container, Typography, TextField, Button, Grid } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
+import '../../../styles/VerProductos.css'
 import ModalAgregarProducto from './ModalAgregarProducto.jsx'; // Modal para agregar producto
 import ModalProducto from './ModalProducto.jsx'; // Modal para editar producto
 

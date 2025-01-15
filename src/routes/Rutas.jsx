@@ -14,12 +14,12 @@ import { Ubicacion } from "../components/pages/Ubicacion";
 import { useAuth } from "../context/AuthProvider.jsx";
 import VerUsuarios from '../components/pages/Usuarios/VerUsuarios.jsx';
 import { Layout } from "../components/pages/Layout/Layout.jsx";
-import { Ventas } from "../components/pages/Ventas/Ventas.jsx";
 import { Proveedores } from "../components/pages/Proveedores/Proveedores.jsx";
 import { Presupuestos } from "../components/pages/Presupuestos/Presupuestos.jsx";
 import { Trabajos } from "../components/pages/Trabajo/Trabajos.jsx";
 import { Home } from "../components/pages/Home.jsx";
 import VerProductos from '../components/pages/Productos/VerProductos.jsx';
+import RegistrarVenta from "../components/pages/Ventas/RegistrarVenta.jsx";
 
 export const Rutas = () => {
   const { isLoggedIn } = useAuth();
@@ -48,7 +48,7 @@ export const Rutas = () => {
               <Route path="/crear-articulos" element={<Crear />} />
               <Route path="/articulo/:id" element={<Articulo />} />
               <Route path="/usuarios" element={<VerUsuarios />} />
-              <Route path="/ventas" element={<Ventas />} />
+              <Route path="/ventas" element={<RegistrarVenta />} />
               <Route path="/productos" element={<VerProductos />} />              
               <Route path="/presupuestos" element={<Presupuestos />} />
               <Route path="/proveedores" element={<Proveedores />} />

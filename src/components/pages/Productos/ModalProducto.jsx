@@ -1,48 +1,54 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Button,
-  TextField,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogTitle,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit"; // Ícono de lápiz
-import CloseIcon from "@mui/icons-material/Close"; // Ícono de la "X"
+import { Modal, TextField, Button, Typography, Grid } from "@mui/material";
 import axios from "axios";
+import { format } from "date-fns"; // Asegúrate de que esta librería esté instalada
 
-const ModalProducto = ({
-  openModal,
-  handleCloseModal,
-  selectedProduct,
-  handleSaveChanges,
-  handleDelete,
-  handleChange,
-}) => {
+const ModalProducto = ({ openModal, handleCloseModal, selectedProduct }) => {
   const [productData, setProductData] = useState(selectedProduct);
 
   useEffect(() => {
     setProductData(selectedProduct); // Actualiza el producto cuando el modal se abre
   }, [selectedProduct]);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Validación para que solo acepte números en campos como "Stock" y precios
-    if (
-      (name === "quantity" || name.includes("price")) &&
-      !/^\d*\.?\d*$/.test(value)
-    ) {
-      return; // No se permite letras o caracteres no numéricos
+    // Validar que los precios solo acepten números y decimales
+    if (name.includes("price") && !/^\d*\.?\d*$/.test(value)) {
+      return; // Si el valor no es un número o decimal, no hace nada
     }
 
     setProductData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const updatedProduct = {
+        ...productData,
+        create_at: new Date(), // Fecha actual de la última actualización
+      };
+      await axios.put(
+        `http://localhost:5000/api/product/actualizar_producto/${productData.id}`,
+        updatedProduct
+      );
+      handleCloseModal(); // Cierra el modal
+    } catch (error) {
+      console.error("Error al guardar cambios:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/product/eliminar_producto/${productData.id}`
+      );
+      handleCloseModal(); // Cierra el modal después de eliminar
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+    }
   };
 
   const renderInputs = () => {
@@ -58,72 +64,60 @@ const ModalProducto = ({
     ];
 
     return fields.map((field, index) => (
-      <Grid item xs={12} sm={6} key={index}>
+      <Grid item xs={12} sm={4} key={index}>
         <TextField
           fullWidth
           label={field.label}
           name={field.name}
           value={field.value || ""}
-          onChange={handleInputChange}
+          onChange={handleChange}
           variant="outlined"
+          InputLabelProps={{
+            style: { color: "#616161" }, // Cambia el color de las etiquetas
+          }}
         />
       </Grid>
     ));
   };
 
   return (
-    <Dialog open={openModal} onClose={handleCloseModal} fullWidth maxWidth="sm">
-      {/* Título del modal con ambos íconos: lápiz y "X" */}
-      <DialogTitle style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          Editar Producto
-        </div>
-        <div>
-          <IconButton
-            edge="end"
-            onClick={handleCloseModal}
-            style={{ color: "gray" }}
+    <Modal open={openModal} onClose={handleCloseModal}>
+      <div className="modal-content">
+        <Typography variant="h6" gutterBottom color="primary">
+          Detalles del Producto
+        </Typography>
+        <Grid container spacing={3}>
+          {renderInputs()}
+        </Grid>
+        <div className="modal-actions">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveChanges}
+            style={{
+              marginTop: "16px",
+              marginRight: "8px",
+              backgroundColor: "#4caf50", // Color verde para guardar
+              color: "#fff",
+            }}
           >
-            <CloseIcon />
-          </IconButton>
-          <IconButton
-            edge="end"
-            style={{ color: "gray" }}
+            Guardar Cambios
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleDelete}
+            style={{
+              marginTop: "16px",
+              backgroundColor: "#f44336", // Color rojo para eliminar
+              color: "#fff",
+            }}
           >
-          </IconButton>
+            Eliminar Producto
+          </Button>
         </div>
-      </DialogTitle>
-
-      {/* Contenido del modal */}
-      <DialogContent>
-        {productData ? (
-          <Grid container spacing={3} style={{ padding: "20px" }}>
-            {/* Renderización de inputs */}
-            {renderInputs()}
-          </Grid>
-        ) : (
-          <Typography variant="body1">Cargando...</Typography>
-        )}
-      </DialogContent>
-
-      {/* Botones de acciones */}
-      <DialogActions>
-        <Button
-          onClick={() => handleDelete(productData.id)}
-          color="error"
-          variant="contained"
-        >
-          Eliminar Producto
-        </Button>
-        <Button
-          onClick={() => handleSaveChanges(productData)}
-          color="primary"
-          variant="contained"
-        >
-          Guardar Cambios
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </div>
+    </Modal>
   );
 };
 
