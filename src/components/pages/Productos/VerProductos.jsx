@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { styled } from '@mui/material/styles';
+import { Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import ModalAgregarProducto from './ModalAgregarProducto.jsx';
 import ModalProducto from './ModalProducto.jsx';
 import '../../../styles/VerProductos.css'; // Archivo CSS para estilos personalizados
-
-const RotatingIcon = styled(SettingsIcon)(({ rotate }) => ({
-  transition: 'transform 0.5s ease',
-  transform: rotate ? 'rotate(360deg)' : 'rotate(0deg)',
-}));
 
 const VerProductos = () => {
   const [products, setProducts] = useState([]);
@@ -84,7 +78,7 @@ const VerProductos = () => {
           color="primary"
           onClick={() => handleEdit(params.row)}
         >
-          <RotatingIcon />
+          Editar
         </Button>
       ),
     },
@@ -103,13 +97,6 @@ const VerProductos = () => {
     create_at: product.create_at || '',
   }));
 
-  const getRowClassName = (params) => {
-    const stock = params.row.quantity;
-    if (stock > 100) return 'stock-alto'; // Verde
-    if (stock > 50) return 'stock-medio'; // Amarillo
-    return 'stock-bajo'; // Rojo
-  };
-
   return (
     <div className="main-container">
       {loading ? (
@@ -126,13 +113,15 @@ const VerProductos = () => {
               rows={rows}
               columns={columns}
               pageSize={5}
-              getRowClassName={(params) => `row-${getRowClassName(params)}`}
               className="data-grid"
               disableSelectionOnClick
             />
           </div>
+         
         </>
+        
       )}
+      
     </div>
   );
 };

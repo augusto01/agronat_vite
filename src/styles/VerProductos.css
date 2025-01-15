@@ -1,72 +1,111 @@
-/* Contenedor principal que ocupa toda la pantalla menos el footer */
+/* Contenedor principal */
 .main-container {
   display: flex;
   flex-direction: column;
   width: 95%;
-  height: 85%;
+  height: 82%;
   padding: 0;
   margin: 0;
   overflow: hidden; /* Evita desbordamientos */
+  background-color: #f0f8ff; /* Fondo azul claro general */
+  color: #000000; /* Texto negro */
 }
 
-/* Contenedor del DataGrid con desplazamiento vertical */
+/* Contenedor del DataGrid con botón al costado */
 .data-grid-container {
   flex-grow: 1;
   overflow-y: auto;
   margin-bottom: 60px; /* Ajusta este valor al alto del footer */
+  border-radius: 8px; /* Bordes redondeados */
+  background-color: #e0f7fa; /* Fondo azul muy claro */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  display: flex; /* Ubicación horizontal del botón y DataGrid */
+  align-items: flex-start; /* Alineación superior */
+  gap: 16px; /* Espaciado entre DataGrid y botón */
+  padding: 16px; /* Espaciado interno */
 }
 
 /* Estilo para el DataGrid */
 .data-grid {
-  background-color: #a6d65f; /* Color de fondo oscuro */
-  color: black; /* Color de fuente claro */
-  border: 1px solid #444444; /* Bordes para el DataGrid */
-  height: 100%; /* Asegura que ocupe todo el espacio disponible */
-  border-radius: 4px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+  border: none; /* Sin bordes */
+  height: 100%; /* Ocupa el espacio disponible */
+  flex-grow: 1; /* Adapta al tamaño del contenedor */
+  font-family: 'Arial', sans-serif; /* Fuente moderna */
 }
 
-/* Estilos para las celdas */
+/* Celdas del DataGrid */
 .data-grid .MuiDataGrid-cell {
-  color: black; /* Color de texto de las celdas */
-  border-bottom: 1px solid #444444; /* Línea divisoria en las filas */
+  color: #000000; /* Texto negro */
+  border-bottom: 1px solid #d9d9d9; /* Línea divisoria tenue */
+  font-size: 14px; /* Tamaño estándar */
+  padding: 8px;
 }
 
-/* Estilo para los encabezados */
+/* Encabezados del DataGrid */
 .data-grid .MuiDataGrid-columnHeaders {
-  background-color: #333333; /* Fondo oscuro para encabezados */
-  color: black !important; /* Color blanco para el texto */
+  background-color: white; /* Verde azulado oscuro */
+  color: black; /* Texto blanco */
   font-weight: bold;
-  font-size: 14px; /* Aumenta un poco el tamaño del texto */
-  border-bottom: 2px solid #444444; /* Línea más gruesa debajo de los encabezados */
-  text-transform: uppercase; /* Transforma los encabezados a mayúsculas */
+  font-size: 14px; /* Tamaño consistente */
+  border-bottom: 2px solid #005b4f;
+  padding: 10px;
 }
-/* Resalta las filas al pasar el mouse */
+
+/* Filas alternadas */
+.data-grid .MuiDataGrid-row:nth-child(even) {
+  background-color: #e0f7fa; /* Azul claro */
+}
+
+.data-grid .MuiDataGrid-row:nth-child(odd) {
+  background-color: #ffffff; /* Blanco */
+}
+
+/* Hover en filas */
 .data-grid .MuiDataGrid-row:hover {
-  background-color: #a6d65f !important; /* Fondo suave y moderno al pasar el mouse */
-  transition: background-color 0.3s ease; /* Transición suave para el hover */
+  background-color: #b2ebf2 !important; /* Azul más claro */
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-/* Colores según el stock */
-.row-stock-alto {
-  background-color: #4caf50; /* Verde suave y moderno */
-  color: #f0f0f0; /* Texto claro para mayor contraste */
-}
-
-.row-stock-medio {
-  background-color: #f0b400; /* Amarillo cálido y suave */
-  color: #f0f0f0; /* Texto claro */
-}
-
-.row-stock-bajo {
-  background-color: #d32f2f; /* Rojo suave y sofisticado */
-  color: #f0f0f0; /* Texto claro */
-}
-
-/* Estilo para el texto de carga */
-.loading {
-  font-size: 20px;
+/* Botón para agregar producto */
+.add-product-button {
+  background-color: #0288d1; /* Azul brillante */
+  color: #ffffff; /* Texto claro */
+  border: none;
+  width: 50px; /* Tamaño cuadrado */
+  height: 50px; /* Tamaño cuadrado */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
   font-weight: bold;
-  color: #ffffff; /* Texto blanco */
-  margin: auto;
+  border-radius: 8px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+.add-product-button:hover {
+  background-color: #039be5; /* Azul claro */
+}
+
+.add-product-button:active {
+  background-color: #01579b; /* Azul oscuro */
+  transform: scale(0.95);
+}
+
+/* Icono del botón */
+.add-product-icon {
+  font-size: 24px; /* Tamaño del icono */
+}
+
+/* Texto de carga */
+.loading {
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
 }
