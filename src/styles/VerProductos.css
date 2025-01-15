@@ -1,5 +1,6 @@
 /* Contenedor principal */
 .main-container {
+  background-color: white !important;
   display: flex;
   flex-direction: column;
   width: 95%;
@@ -7,7 +8,6 @@
   padding: 0;
   margin: 0;
   overflow: hidden; /* Evita desbordamientos */
-  background-color: #f0f8ff; /* Fondo azul claro general */
   color: #000000; /* Texto negro */
 }
 
@@ -15,9 +15,9 @@
 .data-grid-container {
   flex-grow: 1;
   overflow-y: auto;
+  background-color: transparent;
   margin-bottom: 60px; /* Ajusta este valor al alto del footer */
   border-radius: 8px; /* Bordes redondeados */
-  background-color: #e0f7fa; /* Fondo azul muy claro */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra ligera */
   display: flex; /* Ubicación horizontal del botón y DataGrid */
   align-items: flex-start; /* Alineación superior */
@@ -40,7 +40,6 @@
   color: #000000; /* Texto negro */
   border-bottom: 1px solid #d9d9d9; /* Línea divisoria tenue */
   font-size: 14px; /* Tamaño estándar */
-  padding: 8px;
 }
 
 /* Encabezados del DataGrid */
@@ -55,11 +54,11 @@
 
 /* Filas alternadas */
 .data-grid .MuiDataGrid-row:nth-child(even) {
-  background-color: #e0f7fa; /* Azul claro */
+  background-color: #ffffff; /* blanco */
 }
 
 .data-grid .MuiDataGrid-row:nth-child(odd) {
-  background-color: #ffffff; /* Blanco */
+  background-color: #b3edb2; /* azul claro */
 }
 
 /* Hover en filas */
@@ -71,7 +70,7 @@
 
 /* Botón para agregar producto */
 .add-product-button {
-  background-color: #0288d1; /* Azul brillante */
+  background-color: #9ff16f; /* Azul brillante */
   color: #ffffff; /* Texto claro */
   border: none;
   width: 50px; /* Tamaño cuadrado */
@@ -92,7 +91,7 @@
 }
 
 .add-product-button:active {
-  background-color: #01579b; /* Azul oscuro */
+  background-color: #9cf878; /* Azul oscuro */
   transform: scale(0.95);
 }
 
@@ -108,4 +107,24 @@
   color: #000000;
   text-align: center;
   font-family: 'Arial', sans-serif;
+}
+
+* Estilo para los botones */
+.action-button {
+  background-color: #4caf50; /* Verde brillante */
+  color: #ffffff; /* Texto claro */
+  border: none;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+  transition: all 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #66bb6a; /* Verde claro */
+}
+
+.action-button:active {
+  background-color: #388e3c; /* Verde oscuro */
 }
