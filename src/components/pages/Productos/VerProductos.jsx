@@ -93,7 +93,7 @@ const VerProductos = () => {
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 150 },
+    { field: 'id', headerName: 'ID', width: 85 },
     { field: 'name', headerName: 'Nombre', width: 100 },
     { field: 'category', headerName: 'Categoría', width: 100 },
     { field: 'quantity', headerName: 'Cantidad', width: 100 },
@@ -120,7 +120,7 @@ const VerProductos = () => {
     {
       field: 'create_at',
       headerName: 'Fecha de Creación',
-      width: 150,
+      width: 100,
       renderCell: (params) => {
         const date = new Date(params.value);
         const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -178,10 +178,25 @@ const VerProductos = () => {
             variant="contained"
             color="success"
             startIcon={<AddIcon />}
-            fullWidth
             onClick={() => setOpenAddModal(true)} // Abre el modal de agregar producto
           >
             Agregar Producto
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenAddModal(true)} // Abre el modal de agregar producto
+          >
+            Agregar Categoria 
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenAddModal(true)} // Abre el modal de agregar producto
+          >
+            Agregar Medida 
           </Button>
         </Grid>
       </Grid>

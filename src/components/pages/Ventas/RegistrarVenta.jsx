@@ -133,12 +133,7 @@ const RegistrarVenta = () => {
             fullWidth
             sx={{ mb: 2, borderRadius: '5px' }}
           />
-          <DataGrid
-            rows={productosRegistrados}
-            columns={columnasProductos}
-            pageSize={5}
-            autoHeight
-          />
+          
           {/* Detalle de la venta */}
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
@@ -148,7 +143,7 @@ const RegistrarVenta = () => {
               rows={productosVenta}
               columns={columnasVenta}
               pageSize={5}
-              autoHeight
+              height = {100}
             />
           </Box>
         </Box>
