@@ -5,7 +5,7 @@ import { Container, Typography, TextField, Button, Grid } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
-import '../../../styles/VerProductos.css'
+import '../../../styles/VerProductos.css';
 import ModalAgregarProducto from './ModalAgregarProducto.jsx'; // Modal para agregar producto
 import ModalProducto from './ModalProducto.jsx'; // Modal para editar producto
 
@@ -24,27 +24,27 @@ const VerProductos = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Obtener los productos desde la API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(
-          'http://localhost:5000/api/product/listar_productos'
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:5000/api/product/listar_productos'
+      );
+      if (Array.isArray(response.data.productos)) {
+        setProducts(response.data.productos);
+      } else {
+        console.error(
+          "La propiedad 'productos' no es un arreglo o no existe:",
+          response.data
         );
-        if (Array.isArray(response.data.productos)) {
-          setProducts(response.data.productos);
-        } else {
-          console.error(
-            "La propiedad 'productos' no es un arreglo o no existe:",
-            response.data
-          );
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -73,18 +73,6 @@ const VerProductos = () => {
     setRotateId(row.id);
     setTimeout(() => setRotateId(null), 100);
     handleEdit(row);
-  };
-
-  const handleAddProduct = async (newProduct) => {
-    try {
-      const response = await axios.post(
-        'http://localhost:5000/api/product/register',
-        newProduct
-      );
-      setProducts((prev) => [...prev, response.data.producto]);
-    } catch (error) {
-      console.error('Error al agregar producto:', error);
-    }
   };
 
   const handleCloseModal = () => {
@@ -162,7 +150,6 @@ const VerProductos = () => {
         Productos Registrados ({filteredProducts.length})
       </Typography>
 
-      {/* Input de búsqueda y botón de agregar debajo */}
       <Grid container spacing={2} alignItems="center" style={{ marginBottom: '20px' }}>
         <Grid item xs={12}>
           <TextField
@@ -182,33 +169,15 @@ const VerProductos = () => {
           >
             Agregar Producto
           </Button>
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<AddIcon />}
-            onClick={() => setOpenAddModal(true)} // Abre el modal de agregar producto
-          >
-            Agregar Categoria 
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<AddIcon />}
-            onClick={() => setOpenAddModal(true)} // Abre el modal de agregar producto
-          >
-            Agregar Medida 
-          </Button>
         </Grid>
       </Grid>
 
-      {/* Modal para agregar producto */}
       <ModalAgregarProducto
         openModal={openAddModal}
         handleCloseModal={() => setOpenAddModal(false)}
-        handleAddProduct={handleAddProduct}
+        fetchProducts={fetchProducts} // Pasa la función fetchProducts
       />
 
-      {/* Modal para editar producto */}
       {selectedProduct && (
         <ModalProducto
           openModal={openModal}
@@ -222,7 +191,6 @@ const VerProductos = () => {
         />
       )}
 
-      {/* DataGrid con productos filtrados */}
       <div style={{ height: 380, width: '100%' }} className="data-grid">
         {loading ? (
           <Typography variant="h6" color="primary">

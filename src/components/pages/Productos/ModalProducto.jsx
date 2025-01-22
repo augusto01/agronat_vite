@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Modal, TextField, Button, Typography, Grid } from "@mui/material";
+import { Modal, TextField, Button, Typography, Grid, Box } from "@mui/material";
 import axios from "axios";
-import { format } from "date-fns"; // Asegúrate de que esta librería esté instalada
+import CustomSnackbar from "../Alert/CustomSnackbar.jsx"; // Importar el componente reutilizable
 
-const ModalProducto = ({ openModal, handleCloseModal, selectedProduct }) => {
-  const [productData, setProductData] = useState(selectedProduct);
+const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProducts }) => {
+  const [productData, setProductData] = useState({});
+  const [snackbarConfig, setSnackbarConfig] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
-    setProductData(selectedProduct); // Actualiza el producto cuando el modal se abre
+    if (selectedProduct) {
+      setProductData(selectedProduct);
+    } else {
+      setProductData({});
+    }
   }, [selectedProduct]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Validar que los precios solo acepten números y decimales
     if (name.includes("price") && !/^\d*\.?\d*$/.test(value)) {
-      return; // Si el valor no es un número o decimal, no hace nada
+      return;
     }
 
     setProductData((prevState) => ({
@@ -28,15 +32,41 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct }) => {
     try {
       const updatedProduct = {
         ...productData,
-        create_at: new Date(), // Fecha actual de la última actualización
+        create_at: new Date(),
       };
-      await axios.put(
-        `http://localhost:5000/api/product/actualizar_producto/${productData.id}`,
-        updatedProduct
-      );
-      handleCloseModal(); // Cierra el modal
+
+      // Verificar si es agregar o actualizar según la existencia de `id`
+      if (productData.id) {
+        await axios.put(
+          `http://localhost:5000/api/product/actualizar_producto/${productData.id}`,
+          updatedProduct
+        );
+        setSnackbarConfig({
+          open: true,
+          message: "Producto actualizado exitosamente",
+          severity: "success",
+        });
+      } else {
+        await axios.post(`http://localhost:5000/api/product/agregar_producto`, updatedProduct);
+        setSnackbarConfig({
+          open: true,
+          message: "Producto agregado exitosamente",
+          severity: "success",
+        });
+      }
+
+      if (fetchProducts && typeof fetchProducts === "function") {
+        fetchProducts();
+      }
+
+      handleCloseModal();
     } catch (error) {
       console.error("Error al guardar cambios:", error);
+      setSnackbarConfig({
+        open: true,
+        message: "Error al guardar el producto",
+        severity: "error",
+      });
     }
   };
 
@@ -45,79 +75,101 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct }) => {
       await axios.delete(
         `http://localhost:5000/api/product/eliminar_producto/${productData.id}`
       );
-      handleCloseModal(); // Cierra el modal después de eliminar
+
+      setSnackbarConfig({
+        open: true,
+        message: "Producto eliminado exitosamente",
+        severity: "success",
+      });
+
+      if (fetchProducts && typeof fetchProducts === "function") {
+        fetchProducts();
+      }
+
+      handleCloseModal();
     } catch (error) {
       console.error("Error al eliminar producto:", error);
+      setSnackbarConfig({
+        open: true,
+        message: "Error al eliminar el producto",
+        severity: "error",
+      });
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarConfig((prevState) => ({ ...prevState, open: false }));
   };
 
   const renderInputs = () => {
     const fields = [
-      { label: "Nombre", name: "name", value: productData.name },
-      { label: "Categoría", name: "category", value: productData.category },
-      { label: "Stock", name: "quantity", value: productData.quantity },
-      { label: "Medida", name: "medida", value: productData.medida },
-      { label: "Proveedor", name: "provider", value: productData.provider },
-      { label: "Precio sin IVA", name: "price_siva", value: productData.price_siva },
-      { label: "Precio USD", name: "price_usd", value: productData.price_usd },
-      { label: "Precio Final", name: "price_final", value: productData.price_final },
+      { label: "Nombre", name: "name", value: productData.name || "" },
+      { label: "Categoría", name: "category", value: productData.category || "" },
+      { label: "Stock", name: "quantity", value: productData.quantity || "" },
+      { label: "Medida", name: "medida", value: productData.medida || "" },
+      { label: "Proveedor", name: "provider", value: productData.provider || "" },
+      { label: "Precio sin IVA", name: "price_siva", value: productData.price_siva || "" },
+      { label: "Precio USD", name: "price_usd", value: productData.price_usd || "" },
+      { label: "Precio Final", name: "price_final", value: productData.price_final || "" },
     ];
 
     return fields.map((field, index) => (
-      <Grid item xs={12} sm={4} key={index}>
+      <Grid item xs={12} sm={6} key={index}>
         <TextField
           fullWidth
           label={field.label}
           name={field.name}
-          value={field.value || ""}
+          value={field.value}
           onChange={handleChange}
           variant="outlined"
-          InputLabelProps={{
-            style: { color: "#616161" }, // Cambia el color de las etiquetas
-          }}
         />
       </Grid>
     ));
   };
 
   return (
-    <Modal open={openModal} onClose={handleCloseModal}>
-      <div className="modal-content">
-        <Typography variant="h6" gutterBottom color="primary">
-          Detalles del Producto
-        </Typography>
-        <Grid container spacing={3}>
-          {renderInputs()}
-        </Grid>
-        <div className="modal-actions">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSaveChanges}
-            style={{
-              marginTop: "16px",
-              marginRight: "8px",
-              backgroundColor: "#4caf50", // Color verde para guardar
-              color: "#fff",
-            }}
-          >
-            Guardar Cambios
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleDelete}
-            style={{
-              marginTop: "16px",
-              backgroundColor: "#f44336", // Color rojo para eliminar
-              color: "#fff",
-            }}
-          >
-            Eliminar Producto
-          </Button>
-        </div>
-      </div>
-    </Modal>
+    <>
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "80%",
+            maxWidth: 600,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" gutterBottom color="primary">
+            {productData.id ? "Editar Producto" : "Agregar Producto"}
+          </Typography>
+          <Grid container spacing={2}>
+            {renderInputs()}
+          </Grid>
+          <Box sx={{ mt: 3, textAlign: "right" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSaveChanges}
+              sx={{ mr: 2 }}
+            >
+              {productData.id ? "Guardar Cambios" : "Agregar Producto"}
+            </Button>
+            {productData.id && (
+              <Button variant="contained" color="error" onClick={handleDelete}>
+                Eliminar Producto
+              </Button>
+            )}
+          </Box>
+        </Box>
+      </Modal>
+
+      <CustomSnackbar snackbarConfig={snackbarConfig} handleSnackbarClose={handleSnackbarClose} />
+    </>
   );
 };
 
