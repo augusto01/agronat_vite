@@ -1,173 +1,160 @@
-import React, { useState, useEffect } from "react";
-import { Modal, TextField, Button, Typography, Grid, Box } from "@mui/material";
-import axios from "axios";
-import CustomSnackbar from "../Alert/CustomSnackbar.jsx"; // Importar el componente reutilizable
+import React, { useState, useEffect } from 'react';
+import { Modal, Box, TextField, Button, Typography, Grid } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import axios from 'axios';
+import CustomSnackbar from '../Alert/CustomSnackbar.jsx';
 
 const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProducts }) => {
-  const [productData, setProductData] = useState({});
-  const [snackbarConfig, setSnackbarConfig] = useState({ open: false, message: "", severity: "success" });
+  const [productData, setProductData] = useState({
+    name: '',
+    category: '',
+    quantity: 0,
+    medida: '',
+    provider: '',
+    price_siva: 0,
+    price_usd: 0,
+    price_final: 0,
+    create_at: new Date().toISOString(),
+  });
+
+  const [snackbarConfig, setSnackbarConfig] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
 
   useEffect(() => {
     if (selectedProduct) {
       setProductData(selectedProduct);
-    } else {
-      setProductData({});
     }
   }, [selectedProduct]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (name.includes("price") && !/^\d*\.?\d*$/.test(value)) {
-      return;
-    }
-
-    setProductData((prevState) => ({
-      ...prevState,
+    setProductData((prev) => ({
+      ...prev,
       [name]: value,
     }));
-  };
-
-  const handleSaveChanges = async () => {
-    try {
-      const updatedProduct = {
-        ...productData,
-        create_at: new Date(),
-      };
-
-      // Verificar si es agregar o actualizar según la existencia de `id`
-      if (productData.id) {
-        await axios.put(
-          `http://localhost:5000/api/product/actualizar_producto/${productData.id}`,
-          updatedProduct
-        );
-        setSnackbarConfig({
-          open: true,
-          message: "Producto actualizado exitosamente",
-          severity: "success",
-        });
-      } else {
-        await axios.post(`http://localhost:5000/api/product/agregar_producto`, updatedProduct);
-        setSnackbarConfig({
-          open: true,
-          message: "Producto agregado exitosamente",
-          severity: "success",
-        });
-      }
-
-      if (fetchProducts && typeof fetchProducts === "function") {
-        fetchProducts();
-      }
-
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error al guardar cambios:", error);
-      setSnackbarConfig({
-        open: true,
-        message: "Error al guardar el producto",
-        severity: "error",
-      });
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:5000/api/product/eliminar_producto/${productData.id}`
-      );
-
-      setSnackbarConfig({
-        open: true,
-        message: "Producto eliminado exitosamente",
-        severity: "success",
-      });
-
-      if (fetchProducts && typeof fetchProducts === "function") {
-        fetchProducts();
-      }
-
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error al eliminar producto:", error);
-      setSnackbarConfig({
-        open: true,
-        message: "Error al eliminar el producto",
-        severity: "error",
-      });
-    }
   };
 
   const handleSnackbarClose = () => {
     setSnackbarConfig((prevState) => ({ ...prevState, open: false }));
   };
 
-  const renderInputs = () => {
-    const fields = [
-      { label: "Nombre", name: "name", value: productData.name || "" },
-      { label: "Categoría", name: "category", value: productData.category || "" },
-      { label: "Stock", name: "quantity", value: productData.quantity || "" },
-      { label: "Medida", name: "medida", value: productData.medida || "" },
-      { label: "Proveedor", name: "provider", value: productData.provider || "" },
-      { label: "Precio sin IVA", name: "price_siva", value: productData.price_siva || "" },
-      { label: "Precio USD", name: "price_usd", value: productData.price_usd || "" },
-      { label: "Precio Final", name: "price_final", value: productData.price_final || "" },
-    ];
 
-    return fields.map((field, index) => (
-      <Grid item xs={12} sm={6} key={index}>
-        <TextField
-          fullWidth
-          label={field.label}
-          name={field.name}
-          value={field.value}
-          onChange={handleChange}
-          variant="outlined"
-        />
-      </Grid>
-    ));
+  //======================== EDITAR PRODUCTO =========================//
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.put(`http://localhost:5000/api/product/actualizar_producto/${productData.id}`, productData);
+      
+      setSnackbarConfig({
+        open: true,
+        message: 'Producto editado correctamente',
+        severity: 'success',
+      });
+      
+      setTimeout(() => {
+        handleCloseModal(); // Cierra el modal después de un breve tiempo
+      }, 1000);
+
+      if (fetchProducts && typeof fetchProducts === 'function') {
+        fetchProducts();
+      }
+
+
+
+    } catch (error) {
+      console.error('Error al editar el producto:', error);
+      setSnackbarConfig({
+        open: true,
+        message: 'Error al editar el producto',
+        severity: 'error',
+      });
+    }
   };
+
+//=========================== ELIMINAR PRODUCTO ==================================//
+const handleDelete= async (e) => {
+  e.preventDefault();
+
+  try {
+
+    //AQUI VA ELIMINAR EL PRODUCTO //MODIFICAR LA RUTA 
+    await axios.put(`http://localhost:5000/api/product/actualizar_producto/${productData.id}`, productData);
+    
+    setSnackbarConfig({
+      open: true,
+      message: 'Producto eliminado correctamente',
+      severity: 'success',
+    });
+    
+    setTimeout(() => {
+      handleCloseModal(); // Cierra el modal después de un breve tiempo
+    }, 1000);
+
+    if (fetchProducts && typeof fetchProducts === 'function') {
+      fetchProducts();
+    }
+
+
+
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    setSnackbarConfig({
+      open: true,
+      message: 'Error al eliminar el producto',
+      severity: 'error',
+    });
+  }
+};
 
   return (
     <>
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "80%",
-            maxWidth: 600,
-            bgcolor: "background.paper",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 600,
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
             borderRadius: 2,
           }}
         >
-          <Typography variant="h6" gutterBottom color="primary">
-            {productData.id ? "Editar Producto" : "Agregar Producto"}
+          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <EditIcon /> Editar Producto
           </Typography>
-          <Grid container spacing={2}>
-            {renderInputs()}
-          </Grid>
-          <Box sx={{ mt: 3, textAlign: "right" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSaveChanges}
-              sx={{ mr: 2 }}
-            >
-              {productData.id ? "Guardar Cambios" : "Agregar Producto"}
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth label="Nombre del producto" name="name" value={productData.name} onChange={handleChange} required margin="normal" />
+                <TextField fullWidth label="Categoría" name="category" value={productData.category} onChange={handleChange} required margin="normal" />
+                <TextField fullWidth label="Cantidad" name="quantity" type="number" value={productData.quantity} onChange={handleChange} margin="normal" />
+                <TextField fullWidth label="Medida" name="medida" value={productData.medida} onChange={handleChange} margin="normal" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth label="Proveedor" name="provider" value={productData.provider} onChange={handleChange} margin="normal" />
+                <TextField fullWidth label="Precio sin IVA" name="price_siva" type="number" value={productData.price_siva} onChange={handleChange} margin="normal" />
+                <TextField fullWidth label="Precio en USD" name="price_usd" type="number" value={productData.price_usd} onChange={handleChange} margin="normal" />
+                <TextField fullWidth label="Precio final con IVA" name="price_final" type="number" value={productData.price_final} onChange={handleChange} margin="normal" />
+              </Grid>
+            </Grid>
+            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+              Guardar Cambios
             </Button>
-            {productData.id && (
-              <Button variant="contained" color="error" onClick={handleDelete}>
-                Eliminar Producto
-              </Button>
-            )}
-          </Box>
+            <Button type="submit" variant="contained" color="error" fullWidth sx={{ mt: 2 }}   onClick={handleDelete}>
+              Eliminar Producto
+            </Button>
+          </form>
         </Box>
       </Modal>
-
       <CustomSnackbar snackbarConfig={snackbarConfig} handleSnackbarClose={handleSnackbarClose} />
     </>
   );

@@ -1,22 +1,19 @@
 import React from "react";
 import { Snackbar, Alert } from "@mui/material";
 
-const CustomSnackbar = ({ snackbarConfig, handleSnackbarClose }) => {
+const CustomSnackbar = ({ snackbarConfig = {}, handleSnackbarClose }) => {
   return (
     <Snackbar
-      open={snackbarConfig.open}
-      autoHideDuration={3000}
+      open={snackbarConfig.open || false}
+      autoHideDuration={6000}
       onClose={handleSnackbarClose}
     >
-      <Alert
-        onClose={handleSnackbarClose}
-        severity={snackbarConfig.severity}
-        sx={{ width: "100%" }}
-      >
-        {snackbarConfig.message}
+      <Alert severity={snackbarConfig.severity || "info"}>
+        {snackbarConfig.message || "Ocurrió un error"}
       </Alert>
     </Snackbar>
   );
 };
+
 
 export default CustomSnackbar;

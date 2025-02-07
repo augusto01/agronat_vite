@@ -1,6 +1,6 @@
 const Product = require('../models/Product');
 
-// Listar productos
+//=================== LISTAR PRODUCTOS =========================//
 exports.listProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -10,7 +10,7 @@ exports.listProducts = async (req, res) => {
   }
 };
 
-//=================== REGISTRAR PRODUCTO =========================//
+//=================== GENERAR CODIGO =========================//
 
     // Función para generar el código del producto
     const generateProductCode = async () => {
@@ -28,6 +28,7 @@ exports.listProducts = async (req, res) => {
     
 
 
+    /**====================== REGISTRAR PRODUCTO ========================== */
     exports.createProduct = async (req, res) => {
       try {
         const { name, category, quantity, medida, provider, price_siva, price_usd, price_final } = req.body;
@@ -78,7 +79,44 @@ exports.listProducts = async (req, res) => {
     };
     
     
-      
-    
+/**=================== EDITAR PRODUCTO ================== */
+
+exports.editProduct = async (req, res) => {
+  try {
+    const { code } = req.params; // El 'code' que se recibe en la URL
+    const { name, category, quantity, medida, provider, price_siva, price_usd, price_final } = req.body;
+
+    // Buscar el producto por el código único
+    const product = await Product.findOne({ code }); // Busca el producto usando el 'code'
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+    // Actualizar los campos del producto
+    product.name = name;
+    product.category = category;
+    product.quantity = quantity;
+    product.medida = medida;
+    product.provider = provider;
+    product.price_siva = price_siva;
+    product.price_usd = price_usd;
+    product.price_final = price_final;
+
+    // Guardar el producto actualizado
+    await product.save();
+
+    res.status(200).json({
+      message: 'Producto actualizado correctamente',
+      product,
+    });
+  } catch (error) {
+    console.error('Error al actualizar el producto:', error);
+    res.status(500).json({
+      message: 'Error al actualizar el producto',
+      error: error.message,
+    });
+  }
+};
+
     
 

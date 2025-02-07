@@ -46,11 +46,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/product/register',
-        newProduct
-      );
-
+      const response = await axios.post('http://localhost:5000/api/product/register',newProduct);
       console.log('Producto agregado correctamente:', response.data);
 
       setSnackbarConfig({
