@@ -11,6 +11,8 @@ const productSchema = new mongoose.Schema({
   price_usd: { type: Number },
   price_final: { type: Number },
   create_at: { type: Date, default: Date.now },
+  active: { type: Boolean, default: true },
+
 });
 
 

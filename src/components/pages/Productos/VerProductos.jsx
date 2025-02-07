@@ -27,7 +27,7 @@ const VerProductos = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/product/listar_productos'
+        'http://localhost:5000/api/product/productos_activos'
       );
       if (Array.isArray(response.data.productos)) {
         setProducts(response.data.productos);

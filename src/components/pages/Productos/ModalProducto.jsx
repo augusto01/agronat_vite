@@ -82,7 +82,7 @@ const handleDelete= async (e) => {
   try {
 
     //AQUI VA ELIMINAR EL PRODUCTO //MODIFICAR LA RUTA 
-    await axios.put(`http://localhost:5000/api/product/actualizar_producto/${productData.id}`, productData);
+    await axios.put(`http://localhost:5000/api/product/desactivar_producto/${productData.id}`);
     
     setSnackbarConfig({
       open: true,
