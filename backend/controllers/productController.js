@@ -18,7 +18,7 @@ const generateProductCode = async () => {
 //====================== REGISTRAR PRODUCTO ==========================//
 exports.createProduct = async (req, res) => {
   try {
-    const { name, category, quantity, medida, provider, price_siva, price_usd, price_final } = req.body;
+    const { name, category, description, quantity, medida, provider, price_siva, price_usd, price_final, por_descuento, por_marginal } = req.body;
 
     // Validar campos obligatorios
     if (!name || !category || quantity === undefined) {
@@ -39,6 +39,9 @@ exports.createProduct = async (req, res) => {
     const newProduct = new Product({
       code: productCode,
       name,
+      description,
+      por_descuento,
+      por_marginal,
       category,
       quantity,
       medida: medida || '',
@@ -69,7 +72,7 @@ exports.createProduct = async (req, res) => {
 exports.editProduct = async (req, res) => {
   try {
     const { code } = req.params; // El 'code' que se recibe en la URL
-    const { name, category, quantity, medida, provider, price_siva, price_usd, price_final } = req.body;
+    const { name, category, description, quantity, medida, provider, price_siva, price_usd, price_final, por_descuento, por_marginal } = req.body;
 
     // Buscar el producto por el código único
     const product = await Product.findOne({ code });
@@ -80,6 +83,9 @@ exports.editProduct = async (req, res) => {
     // Actualizar los campos del producto
     product.name = name;
     product.category = category;
+    product.description = description;
+    product.por_descuento = por_descuento;
+    product.por_marginal = por_marginal;
     product.quantity = quantity;
     product.medida = medida;
     product.provider = provider;

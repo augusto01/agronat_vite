@@ -56,6 +56,7 @@ const VerProductos = () => {
     (product) =>
       product.name.toLowerCase().includes(search.toLowerCase()) ||
       product.code.toLowerCase().includes(search.toLowerCase()) ||
+      product.description.toLowerCase().includes(search.toLowerCase()) ||
       product.category.toLowerCase().includes(search.toLowerCase()) ||
       product.provider.toLowerCase().includes(search.toLowerCase()) ||
       product.medida.toLowerCase().includes(search.toLowerCase()) ||
@@ -85,11 +86,12 @@ const VerProductos = () => {
     { field: 'name', headerName: 'Nombre', width: 100 },
     { field: 'category', headerName: 'Categoría', width: 100 },
     { field: 'quantity', headerName: 'Cantidad', width: 100 },
+    { field: 'description', headerName: 'Descripcion', width: 100 },
     { field: 'medida', headerName: 'Medida', width: 100 },
     { field: 'provider', headerName: 'Proveedor', width: 150 },
     {
       field: 'price_siva',
-      headerName: 'Sin IVA',
+      headerName: 'PRECIO IVA',
       width: 100,
       renderCell: (params) => `$${params.value.toFixed(2)}`,
     },
@@ -102,6 +104,18 @@ const VerProductos = () => {
     {
       field: 'price_final',
       headerName: 'Precio Final',
+      width: 100,
+      renderCell: (params) => `$${params.value.toFixed(2)}`,
+    },
+    {
+      field: 'por_marginal',
+      headerName: '% marginal',
+      width: 100,
+      renderCell: (params) => `$${params.value.toFixed(2)}`,
+    },
+    {
+      field: 'por_descuento',
+      headerName: '% descuento',
       width: 100,
       renderCell: (params) => `$${params.value.toFixed(2)}`,
     },
@@ -131,15 +145,20 @@ const VerProductos = () => {
     },
   ];
 
+
+  //DATAGRID PARA MOSTRAR LOS PRODUCTOS 
   const rows = filteredProducts.map((product, index) => ({
     id: product.code || index,
     name: product.name,
     category: product.category,
+    description: product.description,
     quantity: product.quantity,
     medida: product.medida,
     provider: product.provider,
     price_siva: product.price_siva,
     price_usd: product.price_usd,
+    por_descuento: product.por_descuento,
+    por_marginal: product.por_marginal,
     price_final: product.price_final,
     create_at: product.create_at,
   }));
@@ -191,7 +210,7 @@ const VerProductos = () => {
         />
       )}
 
-      <div style={{ height: 380, width: '100%' }} className="data-grid">
+      <div style={{ height: '100%', width: '100%' }} className="data-grid">
         {loading ? (
           <Typography variant="h6" color="primary">
             Cargando productos...
