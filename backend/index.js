@@ -19,6 +19,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes.js');
+const salesRoutes = require('./routes/salesRoutes.js');
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,7 @@ connectDB();
 
 app.use('/api/user', userRoutes); // RUTAS USUARIO
 app.use('/api/product', productRoutes); // RUTAS PRODUCTO
+app.use('/api/sales', salesRoutes); // RUTAS VENTAS
 
 const puerto = 5000;
 app.listen(puerto, () => {

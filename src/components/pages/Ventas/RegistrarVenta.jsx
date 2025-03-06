@@ -1,193 +1,149 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, Button, Typography, Autocomplete } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import axios from 'axios';
 
 const RegistrarVenta = () => {
-  const [productosRegistrados, setProductosRegistrados] = useState([
-    { id: 1, nombre: 'Zapatos de Seguridad Oslo T41', precio: 200 },
-    { id: 2, nombre: 'Casco de Seguridad', precio: 50 },
-    { id: 3, nombre: 'Guantes de Seguridad', precio: 30 },
-  ]);
+  const [productosRegistrados, setProductosRegistrados] = useState([]);
   const [productosVenta, setProductosVenta] = useState([]);
   const [pago, setPago] = useState('');
   const [total, setTotal] = useState(0);
   const [cliente, setCliente] = useState('Consumidor Final');
   const [comprobante, setComprobante] = useState('Boleta');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  // Llamada a la API para obtener los productos
+  const fetchProductosRegistrados = async (query = '') => {
+    setLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/sales/productos_disponibles', {
+        params: { searchQuery: query },
+      });
+      setProductosRegistrados(response.data.productos);
+    } catch (error) {
+      console.error('Error al obtener productos:', error);
+    }
+    setLoading(false);
+  };
+
+  // Efecto para realizar la búsqueda de productos
+  useEffect(() => {
+    fetchProductosRegistrados(searchQuery);
+  }, [searchQuery]);
+
+  // Función para agregar productos al carrito
   const agregarProducto = (producto) => {
-    const productoExistente = productosVenta.find((p) => p.id === producto.id);
+    const productoExistente = productosVenta.find((p) => p._id === producto._id);
     if (productoExistente) {
-      // Si el producto ya está en el carrito, se incrementa la cantidad
-      const actualizados = productosVenta.map((p) =>
-        p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
+      const nuevosProductos = productosVenta.map((p) =>
+        p._id === producto._id ? { ...p, cantidad: p.cantidad + 1 } : p
       );
-      setProductosVenta(actualizados);
+      setProductosVenta(nuevosProductos);
     } else {
-      // Si el producto no está en el carrito, se agrega como nuevo con cantidad 1
       const nuevoProducto = { ...producto, cantidad: 1 };
       setProductosVenta([...productosVenta, nuevoProducto]);
     }
     calcularTotal([...productosVenta, { ...producto, cantidad: 1 }]);
   };
 
+  // Función para eliminar todos los productos del carrito
   const eliminarVenta = () => {
     setProductosVenta([]);
     setTotal(0);
     setPago('');
   };
 
+  // Función para calcular el total
   const calcularTotal = (productos) => {
     const nuevoTotal = productos.reduce(
-      (sum, producto) => sum + producto.precio * producto.cantidad,
+      (sum, producto) => sum + (producto.price_final || 0) * (producto.cantidad || 0),
       0
     );
     setTotal(nuevoTotal);
   };
 
-  const calcularCambio = () => {
-    return Math.max(0, pago - total).toFixed(2);
-  };
-
-  const handleCantidadChange = (id, cantidad) => {
-    if (cantidad <= 0) return; // Para evitar cantidades negativas o cero
-    const nuevosProductos = productosVenta.map((p) =>
-      p.id === id ? { ...p, cantidad: parseInt(cantidad, 10) } : p
-    );
-    setProductosVenta(nuevosProductos);
-    calcularTotal(nuevosProductos);
-  };
-
-  const columnasProductos = [
+  const columnasVenta = [
     { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'precio', headerName: 'Precio', width: 120 },
+    { field: 'name', headerName: 'Nombre', flex: 1 },
+    { field: 'category', headerName: 'Categoría', width: 150 },
+    { field: 'price_final', headerName: 'Precio Unit.', width: 120 },
     {
-      field: 'acciones',
-      headerName: 'Acciones',
+      field: 'action',
+      headerName: 'Acción',
       width: 120,
       renderCell: (params) => (
         <Button
           variant="contained"
-          color="primary"
+          color="Danger"
           onClick={() => agregarProducto(params.row)}
         >
-          <AddShoppingCartIcon />
+          Eliminar
         </Button>
       ),
     },
   ];
 
-  const columnasVenta = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    {
-      field: 'cantidad',
-      headerName: 'Cantidad',
-      width: 120,
-      renderCell: (params) => (
-        <TextField
-          type="number"
-          value={params.row.cantidad}
-          onChange={(e) => handleCantidadChange(params.row.id, e.target.value)}
-          sx={{ width: '80px' }}
-        />
-      ),
-    },
-    { field: 'precio', headerName: 'Precio Unit.', width: 120 },
-    {
-      field: 'subtotal',
-      headerName: 'Subtotal',
-      width: 120,
-      valueGetter: (params) => {
-        const row = params.row || {}; // Asegurarse de que row no sea undefined
-        const cantidad = row.cantidad || 0;
-        const precio = row.precio || 0;
-        return (cantidad * precio).toFixed(2);
-      },
-    },
-  ];
-
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 'calc(100vh - 100px)',
-        overflow: 'auto',
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: 3,
-          mb: 3,
-        }}
-      >
-        {/* Lado izquierdo: DataGrid de Productos y Detalle de la Venta */}
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 100px)', overflow: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 3, mb: 3 }}>
         <Box sx={{ flex: 1, backgroundColor: '#fff', borderRadius: '8px', padding: '10px' }}>
-          <TextField
-            label="Buscar productos"
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 2, borderRadius: '5px' }}
+          {/* Campo de búsqueda con Autocomplete */}
+          <Autocomplete
+            id="productos-buscar"
+            options={productosRegistrados}
+            getOptionLabel={(option) => `${option.name} - ${option.category} - S/ ${option.price_final}`}
+            onInputChange={(e, newValue) => setSearchQuery(newValue)} // Actualizar la búsqueda
+            onChange={(event, newValue) => {
+              if (newValue) {
+                agregarProducto(newValue); // Agregar producto al seleccionar
+                setSearchQuery(''); // Limpiar el campo de búsqueda
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Buscar productos"
+                variant="outlined"
+                fullWidth
+                sx={{ mb: 2, borderRadius: '5px' }}
+              />
+            )}
+            loading={loading}
           />
-          
+
           {/* Detalle de la venta */}
           <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-              Detalle de la Venta
-            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>Detalle de la Venta</Typography>
             <DataGrid
               rows={productosVenta}
               columns={columnasVenta}
               pageSize={5}
-              height = {100}
+              getRowId={(row) => row._id} // Usando _id como identificador único
             />
           </Box>
         </Box>
 
         {/* Lado derecho: Cliente, Comprobante, Total y Cambio */}
-        <Box
-          sx={{
-            width: '300px',
-            backgroundColor: '#fff',
-            borderRadius: '8px',
-            padding: '10px',
-          }}
-        >
-          {/* Cliente y Comprobante */}
+        <Box sx={{ width: '300px', backgroundColor: '#fff', borderRadius: '8px', padding: '10px' }}>
           <Box sx={{ mb: 3 }}>
             <TextField
               label="Cliente"
               variant="outlined"
               defaultValue={cliente}
               fullWidth
-              sx={{
-                mb: 2,
-                borderRadius: '5px',
-                '& .MuiInputBase-root': {
-                  height: '40px',
-                },
-              }}
+              sx={{ mb: 2, borderRadius: '5px' }}
               onChange={(e) => setCliente(e.target.value)}
             />
             <TextField
               label="Comprobante"
               variant="outlined"
               select
-              SelectProps={{
-                native: true,
-              }}
+              SelectProps={{ native: true }}
               fullWidth
               value={comprobante}
               onChange={(e) => setComprobante(e.target.value)}
-              sx={{
-                '& .MuiInputBase-root': {
-                  height: '40px',
-                },
-              }}
+              sx={{ '& .MuiInputBase-root': { height: '40px' } }}
             >
               <option value="Boleta">Boleta</option>
               <option value="Factura">Factura</option>
@@ -204,13 +160,7 @@ const RegistrarVenta = () => {
               type="number"
               variant="outlined"
               fullWidth
-              sx={{
-                my: 2,
-                borderRadius: '5px',
-                '& .MuiInputBase-root': {
-                  height: '40px',
-                },
-              }}
+              sx={{ my: 2, borderRadius: '5px' }}
               value={pago}
               onChange={(e) => setPago(Number(e.target.value))}
             />
@@ -225,18 +175,12 @@ const RegistrarVenta = () => {
                 borderRadius: '4px',
               }}
             >
-              Cambio: S/ {calcularCambio()}
+              Cambio: S/ {Math.max(0, pago - total).toFixed(2)}
             </Typography>
           </Box>
 
           {/* Botones */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: 2,
-            }}
-          >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
             <Button
               variant="contained"
               color="error"
