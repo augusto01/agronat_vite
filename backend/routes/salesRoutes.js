@@ -3,7 +3,8 @@ const router = express.Router();
 const salesController = require('../controllers/salesController');
 
 
-router.get('/productos_disponibles',salesController.searchProducts);
+
+router.get('/productos_disponibles', salesController.searchProducts);
 
 
 
