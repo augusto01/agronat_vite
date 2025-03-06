@@ -12,7 +12,7 @@ const RegistrarVenta = () => {
   const [comprobante, setComprobante] = useState('Boleta');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const [abonado, setAbonado] = useState(false);
+  const [abonado, setAbonado] = useState(true);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [cantidad, setCantidad] = useState(1);
 
