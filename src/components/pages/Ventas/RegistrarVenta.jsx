@@ -174,7 +174,7 @@ const RegistrarVenta = () => {
         {/* Buscador de productos */}
         <Autocomplete
           options={productosRegistrados}
-          getOptionLabel={(option) => `${option.name} - ${option.category} - $ ${option.price_final}`}
+          getOptionLabel={(option) => `${option.name} - ${option.category} - ${option.description} - $ ${option.price_final}`}
           onInputChange={(e, newValue) => setSearchQuery(newValue)}
           onChange={(event, newValue) => newValue && agregarProducto(newValue)}
           renderInput={(params) => (

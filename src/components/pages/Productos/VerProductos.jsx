@@ -199,21 +199,6 @@ const VerProductos = () => {
 
   return (
     <Container maxWidth={false} style={{ padding: 0 }}>
-      <style>
-        {`
-          @keyframes rotate {
-            from {
-              transform: rotate(0deg);
-            }
-            to {
-              transform: rotate(360deg);
-            }
-          }
-          body {
-            font-family: 'Open Sans', sans-serif;
-          }
-        `}
-      </style>
       <Typography variant="h4" gutterBottom className="title" style={{ padding: '', fontFamily: 'Open Sans', fontWeight: 500 }}>
         Mis productos 
       </Typography>
