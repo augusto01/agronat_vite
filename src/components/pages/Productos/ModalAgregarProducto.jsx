@@ -107,10 +107,22 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
     // Si el campo medida está vacío, se asigna "Unidades" por defecto
     const medida = newProduct.medida.trim() || 'Unidades';
 
+    // Si el campo price_siva está vacío, se asigna 1 por defecto
+    const price_siva = newProduct.price_siva || 1;
+
+    // Si el campo por_marginal está vacío, se asigna 0 por defecto
+    const por_marginal = newProduct.por_marginal || 0;
+
+    // Si el campo por_descuento está vacío, se asigna 0 por defecto
+    const por_descuento = newProduct.por_descuento || 0;
+
     const productToSubmit = {
       ...newProduct,
       provider, // Asignar el proveedor por defecto si está vacío
       medida,   // Asignar la medida por defecto si está vacía
+      price_siva, // Asignar el precio IVA por defecto si está vacío
+      por_marginal, // Asignar el margen por defecto si está vacío
+      por_descuento, // Asignar el descuento por defecto si está vacío
     };
 
     try {
@@ -136,9 +148,10 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
         quantity: 0,
         medida: '',
         provider: '',
-        price_siva: 0,
-        price_usd: 0,
+        price_siva: 1,
+        price_usd: 1,
         por_marginal: 0,
+        por_descuento: 0,
         price_final: 0,
         create_at: new Date().toISOString(),
       });
@@ -284,6 +297,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.price_siva}
                   onChange={handleChange}
                   margin="normal"
+                  required
                   InputProps={{
                     startAdornment: <AttachMoneyIcon sx={{ mr: 1, color: 'action.active' }} />,
                   }}
@@ -310,6 +324,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.por_marginal}
                   onChange={handleChange}
                   margin="normal"
+                  required
                   InputProps={{
                     startAdornment: <PercentIcon sx={{ mr: 1, color: 'action.active' }} />,
                   }}
@@ -323,6 +338,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.por_descuento}
                   onChange={handleChange}
                   margin="normal"
+                  required
                   InputProps={{
                     startAdornment: <PercentIcon sx={{ mr: 1, color: 'action.active' }} />,
                   }}
