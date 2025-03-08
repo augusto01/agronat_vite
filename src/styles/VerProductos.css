@@ -42,6 +42,12 @@
   font-size: 14px; /* Tamaño estándar */
 }
 
+
+/* Animacion de la tuerca */
+.rotate-on-click {
+  animation: rotate 0.5s linear; /* Duración de la animación */
+}
+
 /* Encabezados del DataGrid */
 .data-grid .MuiDataGrid-columnHeaders {
   background-color: white; /* Verde azulado oscuro */

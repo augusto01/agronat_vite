@@ -33,6 +33,15 @@ body {
     color: #666; /* Texto más suave */
   }
   
+  .empresa-info a {
+    text-decoration: none; /* Quitar subrayado del enlace */
+    color: #666; /* Color del texto */
+  }
+  
+  .empresa-info a:hover {
+    color: #333; /* Cambiar color al pasar el mouse */
+  }
+  
   .comprobante-info {
     margin-left: auto; /* Alinear a la derecha */
     text-align: right;
@@ -88,7 +97,7 @@ body {
   }
   
   .totals {
-    text-align: right;
+    text-align: right; /* Alinear el total a la derecha */
     margin-top: 20px; /* Espacio entre la tabla y el total */
   }
   
@@ -99,7 +108,7 @@ body {
   
   .totals th, .totals td {
     padding: 12px;
-    text-align: right;
+    text-align: right; /* Alinear texto a la derecha */
   }
   
   .totals th {
