@@ -1,88 +1,120 @@
-/* FacturaComprobante.css */
-
-.factura {
-    max-width: 600px;
-    margin: auto;
+body {
+    font-family: 'Roboto', sans-serif; /* Fuente moderna */
+    margin: 0;
     padding: 20px;
-    border: 1px solid #ccc;
+    background-color: #f9f9f9; /* Fondo suave */
+    color: #333; /* Texto oscuro */
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff; /* Fondo blanco */
+    padding: 20px;
     border-radius: 8px;
-    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
   }
   
-  .factura h1 {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .factura h2 {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .factura h3 {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .factura p {
-    margin: 5px 0;
-  }
-  
-  .factura .logo {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .factura .logo img {
-    max-width: 150px;
-  }
-  
-  .factura .info-cliente {
-    margin-bottom: 20px;
-  }
-  
-  .factura .tabla-productos {
-    width: 100%;
-    margin-bottom: 20px;
-    border-collapse: collapse;
-  }
-  
-  .factura .tabla-productos th,
-  .factura .tabla-productos td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .factura .tabla-productos th {
-    font-weight: bold;
-  }
-  
-  .factura .totales {
-    margin-bottom: 20px;
-  }
-  
-  .factura .totales div {
+  .header {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
+    align-items: center; /* Alinear verticalmente */
+    margin-bottom: 20px;
   }
   
-  .factura .totales .total {
+  .logo {
+    height: 100px; /* Alto fijo para el logo */
+    width: auto; /* Ancho automático para mantener la proporción */
+    margin-right: 20px; /* Espacio entre el logo y la info */
+  }
+  
+  .empresa-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666; /* Texto más suave */
+  }
+  
+  .comprobante-info {
+    margin-left: auto; /* Alinear a la derecha */
+    text-align: right;
+  }
+  
+  .comprobante-info h1 {
+    font-size: 24px;
+    margin: 0;
+    color: #333; /* Texto oscuro */
+  }
+  
+  .comprobante-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666; /* Texto más suave */
+  }
+  
+  .client-info {
+    margin-bottom: 20px;
+  }
+  
+  .client-info h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333; /* Texto oscuro */
+  }
+  
+  .client-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666; /* Texto más suave */
+  }
+  
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .invoice-table th, .invoice-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee; /* Línea suave */
+  }
+  
+  .invoice-table th {
+    font-weight: 500;
+    color: #333; /* Texto oscuro */
+  }
+  
+  .invoice-table td {
+    color: #666; /* Texto más suave */
+  }
+  
+  .totals {
+    text-align: right;
+    margin-top: 20px; /* Espacio entre la tabla y el total */
+  }
+  
+  .totals table {
+    width: 100%; /* Ocupa todo el ancho */
+    border-top: 2px solid #333; /* Línea superior más gruesa */
+  }
+  
+  .totals th, .totals td {
+    padding: 12px;
+    text-align: right;
+  }
+  
+  .totals th {
+    font-weight: 500;
+    color: #333; /* Texto oscuro */
+  }
+  
+  .totals td {
     font-weight: bold;
+    color: #333; /* Texto oscuro */
   }
   
-  .factura .informacion-pago {
-    margin-bottom: 20px;
-  }
-  
-  .factura .contacto {
-    margin-bottom: 20px;
-  }
-  
-  .factura .agradecimiento {
+  .footer {
     text-align: center;
-    font-style: italic;
+    font-size: 14px;
+    color: #666; /* Texto más suave */
     margin-top: 20px;
   }

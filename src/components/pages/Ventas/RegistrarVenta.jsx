@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography, Autocomplete, FormControlLabel, Checkbox, Paper } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Autocomplete,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+  Snackbar,
+} from '@mui/material';
 import axios from 'axios';
 import logo from '../../../assets/agronat-logo.png'; // Importar el logo
-import FacturaComprobante from './FacturaComprobante'; // Importar el componente de factura
 
 const RegistrarVenta = () => {
   const [productosRegistrados, setProductosRegistrados] = useState([]);
   const [carrito, setCarrito] = useState([]);
+  const [ventanaImpresion, setVentanaImpresion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -14,6 +24,7 @@ const RegistrarVenta = () => {
   const [cliente, setCliente] = useState('Consumidor Final');
   const [comprobante, setComprobante] = useState('Boleta');
   const [abonado, setAbonado] = useState(true);
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Estado para el Snackbar
 
   // Obtener productos disponibles
   useEffect(() => {
@@ -90,102 +101,67 @@ const RegistrarVenta = () => {
     setPago('');
   };
 
-  const imprimirFactura = () => {
+  // Función para imprimir la factura/comprobante
+  const imprimirFactura = async () => {
     const venta = {
       cliente,
       comprobante,
       productos: carrito,
-      total,
-      pago: pago || 0,
-      cambio: calcularCambio(),
+      total: carrito.reduce((acc, producto) => acc + producto.cantidad * producto.price_final, 0),
     };
   
+    // Cargar el archivo factura.html desde la carpeta public
+    const response = await fetch('/factura.html');
+    let facturaHTML = await response.text();
+  
+    // Reemplazar las variables dinámicas en el HTML
+    facturaHTML = facturaHTML
+      .replace('{{comprobante}}', venta.comprobante === 'Boleta' ? 'BOLETA DE VENTA' : 'FACTURA')
+      .replace('{{numeroComprobante}}', venta.comprobante === 'Boleta' ? 'Boleta n.º 01234' : 'Factura n.º 01234')
+      .replace('{{fecha}}', new Date().toLocaleDateString())
+      .replace('{{cliente}}', venta.cliente)
+      .replace('{{logo}}', logo) // Asegúrate de que `logo` sea la ruta correcta
+      .replace(
+        '{{productos}}',
+        venta.productos
+          .map(
+            (producto) => `
+          <tr>
+            <td>${producto.name}</td>
+            <td>${producto.cantidad}</td>
+            <td>S/ ${producto.price_final.toFixed(2)}</td>
+            <td>S/ ${(producto.cantidad * producto.price_final).toFixed(2)}</td>
+          </tr>
+        `
+          )
+          .join('')
+      )
+      .replace('{{total}}', `S/ ${venta.total.toFixed(2)}`);
+  
+    // Abrir la ventana de impresión y escribir el HTML
     const ventanaImpresion = window.open('', '_blank');
-    ventanaImpresion.document.write(`
-      <html>
-        <head>
-          <title>${comprobante}</title>
-          <link rel="stylesheet" href="FacturaComprobante.css">
-        </head>
-        <body>
-          <div class="factura">
-            <div class="logo">
-              <img src="${logo}" alt="Logo de Agronat" />
-            </div>
-            <h1>${comprobante === 'Boleta' ? 'BOLETA DE VENTA' : 'FACTURA'}</h1>
-            <p style="text-align: center;">${comprobante === 'Boleta' ? 'Boleta n.º 01234' : 'Factura n.º 01234'}</p>
-            <p style="text-align: center;">Fecha: ${new Date().toLocaleDateString()}</p>
-  
-            <div class="info-cliente">
-              <h2>Vibras</h2>
-              <h3>${venta.cliente}</h3>
-              <p>(55) 1234-5678</p>
-              <p>Calle Cualquiera 123, Cualquier Lugar</p>
-            </div>
-  
-            <table class="tabla-productos">
-              <thead>
-                <tr>
-                  <th>Artículo</th>
-                  <th>Cantidad</th>
-                  <th>Precio</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${venta.productos
-                  .map(
-                    (producto) => `
-                  <tr>
-                    <td>${producto.name}</td>
-                    <td>${producto.cantidad}</td>
-                    <td>S/ ${producto.price_final.toFixed(2)}</td>
-                    <td>S/ ${(producto.cantidad * producto.price_final).toFixed(2)}</td>
-                  </tr>
-                `
-                  )
-                  .join('')}
-              </tbody>
-            </table>
-  
-            <div class="totales">
-              <div>
-                <span>Subtotal:</span>
-                <span>S/ ${venta.total.toFixed(2)}</span>
-              </div>
-              <div>
-                <span>Impuestos (0%):</span>
-                <span>S/ 0.00</span>
-              </div>
-              <div class="total">
-                <span>Total:</span>
-                <span>S/ ${venta.total.toFixed(2)}</span>
-              </div>
-            </div>
-  
-            <div class="informacion-pago">
-              <h3>Información de pago</h3>
-              <p>Isabel Mercado</p>
-              <p>El Banquito</p>
-              <p>Cuenta: 0702 4567 8901 2345</p>
-              <p>Fecha de pago: ${new Date().toLocaleDateString()}</p>
-            </div>
-  
-            <div class="contacto">
-              <h3>Contacto</h3>
-              <p>(55) 1234-5678</p>
-              <p>hola@sitlohrcelble.com</p>
-              <p>Calle Cualquiera 123, Cualquier Lugar, CP: 12345</p>
-              <p>www.sitlohrcelble.com</p>
-            </div>
-  
-            <p class="agradecimiento">¡Gracias por su compra! 😊</p>
-          </div>
-        </body>
-      </html>
-    `);
+    ventanaImpresion.document.write(facturaHTML);
     ventanaImpresion.document.close();
-    ventanaImpresion.print(); // Abre el diálogo de impresión
+  
+    // Mostrar Snackbar
+    setOpenSnackbar(true);
+  
+    // Guardar la ventana de impresión en el estado para usarla en handleCloseSnackbar
+    setVentanaImpresion(ventanaImpresion);
+  };
+  
+  // Cerrar Snackbar y preguntar si desea imprimir
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  
+    // Mostrar diálogo de confirmación después de cerrar el Snackbar
+    const confirmarImpresion = window.confirm(
+      'Venta generada con éxito. ¿Desea imprimir el comprobante?'
+    );
+  
+    if (confirmarImpresion && ventanaImpresion) {
+      ventanaImpresion.print(); // Abre el diálogo de impresión
+    }
   };
 
   return (
@@ -340,6 +316,14 @@ const RegistrarVenta = () => {
           </Button>
         </Box>
       </Box>
+
+      {/* Notificación de éxito */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="Venta generada con éxito."
+      />
     </Box>
   );
 };
