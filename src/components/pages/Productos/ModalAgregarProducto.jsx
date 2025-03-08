@@ -11,7 +11,17 @@ import {
   InputLabel,
   FormControl
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {
+  AddCircleOutline as AddCircleOutlineIcon,
+  Description as DescriptionIcon,
+  Category as CategoryIcon,
+  Numbers as NumbersIcon,
+  Straighten as StraightenIcon,
+  LocalShipping as LocalShippingIcon,
+  AttachMoney as AttachMoneyIcon,
+  Percent as PercentIcon,
+  CheckCircle as CheckCircleIcon
+} from '@mui/icons-material';
 import axios from 'axios';
 import CustomSnackbar from '../Alert/CustomSnackbar.jsx';
 
@@ -27,7 +37,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
     price_siva: 1,
     price_usd: 1,
     por_marginal: 0, // Porcentaje marginal
-    por_descuento:0,
+    por_descuento: 0,
     price_final: 0,
     create_at: new Date().toISOString(),
   });
@@ -57,33 +67,50 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
     setSnackbarConfig((prevState) => ({ ...prevState, open: false }));
   };
 
-   //CALCULA EL DESCUENTO Y EL PRECIO MARGINAL DEL PRODUCTO A INSERTAR
-
+  // Calcula el descuento y el precio marginal del producto a insertar
   useEffect(() => {
     let finalPrice = newProduct.price_siva;
-  
+
     if (newProduct.por_marginal > 0) {
       // Aplica el porcentaje marginal primero
       finalPrice = newProduct.price_siva * (1 + newProduct.por_marginal / 100);
     }
-  
+
     if (newProduct.por_descuento > 0) {
       // Aplica el descuento sobre el precio con margen
       finalPrice = finalPrice * (1 - newProduct.por_descuento / 100);
     }
-  
+
     setNewProduct((prev) => ({
       ...prev,
       price_final: finalPrice,
     }));
   }, [newProduct.price_siva, newProduct.por_marginal, newProduct.por_descuento]);
- 
+
   // Maneja la sumisión del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const productToSubmit = { 
-      ...newProduct, 
+    // Validar que el campo descripción no esté vacío
+    if (!newProduct.description.trim()) {
+      setSnackbarConfig({
+        open: true,
+        message: 'El campo descripción es requerido',
+        severity: 'error',
+      });
+      return;
+    }
+
+    // Si el campo proveedor está vacío, se asigna "Proveedor" por defecto
+    const provider = newProduct.provider.trim() || 'Proveedor';
+
+    // Si el campo medida está vacío, se asigna "Unidades" por defecto
+    const medida = newProduct.medida.trim() || 'Unidades';
+
+    const productToSubmit = {
+      ...newProduct,
+      provider, // Asignar el proveedor por defecto si está vacío
+      medida,   // Asignar la medida por defecto si está vacía
     };
 
     try {
@@ -101,6 +128,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
         fetchProducts();
       }
 
+      // Resetear el formulario
       setNewProduct({
         name: '',
         description: '', // Reseteamos el campo de descripción
@@ -148,12 +176,12 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
           >
             <AddCircleOutlineIcon /> Nuevo Producto
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               {/* Primera columna */}
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -164,6 +192,10 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   onChange={handleChange}
                   required
                   margin="normal"
+                  InputProps={{
+                    startAdornment: <DescriptionIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
                 <TextField
                   fullWidth
@@ -172,8 +204,13 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.description}
                   onChange={handleChange}
                   margin="normal"
+                  required
+                  InputProps={{
+                    startAdornment: <DescriptionIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
                   <InputLabel>Categoría</InputLabel>
                   <Select
                     label="Categoría"
@@ -181,6 +218,7 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                     value={newProduct.category}
                     onChange={handleChange}
                     required
+                    startAdornment={<CategoryIcon sx={{ mr: 1, color: 'action.active' }} />}
                   >
                     {categories.map((category, index) => (
                       <MenuItem key={index} value={category}>
@@ -197,14 +235,19 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.quantity}
                   onChange={handleChange}
                   margin="normal"
+                  InputProps={{
+                    startAdornment: <NumbersIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
                   <InputLabel>Medida</InputLabel>
                   <Select
                     label="Medida"
                     name="medida"
                     value={newProduct.medida}
                     onChange={handleChange}
+                    startAdornment={<StraightenIcon sx={{ mr: 1, color: 'action.active' }} />}
                   >
                     {measures.map((measure, index) => (
                       <MenuItem key={index} value={measure}>
@@ -217,13 +260,14 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
 
               {/* Segunda columna */}
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
                   <InputLabel>Proveedor</InputLabel>
                   <Select
                     label="Proveedor"
                     name="provider"
                     value={newProduct.provider}
                     onChange={handleChange}
+                    startAdornment={<LocalShippingIcon sx={{ mr: 1, color: 'action.active' }} />}
                   >
                     {providers.map((provider, index) => (
                       <MenuItem key={index} value={provider}>
@@ -240,6 +284,10 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.price_siva}
                   onChange={handleChange}
                   margin="normal"
+                  InputProps={{
+                    startAdornment: <AttachMoneyIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
                 <TextField
                   fullWidth
@@ -249,15 +297,23 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.price_usd}
                   onChange={handleChange}
                   margin="normal"
+                  InputProps={{
+                    startAdornment: <AttachMoneyIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
                 <TextField
                   fullWidth
-                  label="Porcentaje Marginal (%)"
+                  label="Margen (%)"
                   name="por_marginal"
                   type="number"
                   value={newProduct.por_marginal}
                   onChange={handleChange}
                   margin="normal"
+                  InputProps={{
+                    startAdornment: <PercentIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
                 <TextField
                   fullWidth
@@ -267,6 +323,10 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   value={newProduct.por_descuento}
                   onChange={handleChange}
                   margin="normal"
+                  InputProps={{
+                    startAdornment: <PercentIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
+                  sx={{ mb: 2 }}
                 />
 
                 {/* Mostrar el Precio Final con fondo verde */}
@@ -274,14 +334,14 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
                   sx={{
                     mt: 2,
                     p: 2,
-                    bgcolor: 'green',
+                    bgcolor: 'primary.main',
                     color: 'white',
                     fontWeight: 'bold',
                     textAlign: 'center',
+                    borderRadius: 1,
                   }}
                 >
                   <Typography variant="h6">
-                    {/* Verificar si price_final es un número válido */}
                     Precio de venta: ${Number(newProduct.price_final).toFixed(2)}
                   </Typography>
                 </Box>
@@ -293,7 +353,8 @@ const ModalAgregarProducto = ({ openModal, handleCloseModal, fetchProducts }) =>
               variant="contained"
               color="primary"
               fullWidth
-              sx={{ mt: 2 }}
+              sx={{ mt: 3, py: 1.5 }}
+              startIcon={<CheckCircleIcon />}
             >
               Agregar Producto
             </Button>
