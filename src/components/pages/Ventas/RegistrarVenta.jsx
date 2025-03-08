@@ -18,12 +18,13 @@ const RegistrarVenta = () => {
   const [carrito, setCarrito] = useState([]);
   const [ventanaImpresion, setVentanaImpresion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [abonado, setAbonado] = useState(true); // Estado inicial del checkbox
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [pago, setPago] = useState('');
   const [cliente, setCliente] = useState('Consumidor Final');
   const [comprobante, setComprobante] = useState('Boleta');
-  const [abonado, setAbonado] = useState(true);
+  const [medioPago, setMedioPago] = useState('Efectivo'); // Estado inicial  const [abonado, setAbonado] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false); // Estado para el Snackbar
 
   // Obtener productos disponibles
@@ -108,6 +109,7 @@ const RegistrarVenta = () => {
       comprobante,
       productos: carrito,
       total: carrito.reduce((acc, producto) => acc + producto.cantidad * producto.price_final, 0),
+      medioPago, // Asegúrate de que este estado esté definido en tu componente
     };
   
     // Cargar el archivo factura.html desde la carpeta public
@@ -121,6 +123,7 @@ const RegistrarVenta = () => {
       .replace('{{fecha}}', new Date().toLocaleDateString())
       .replace('{{cliente}}', venta.cliente)
       .replace('{{logo}}', logo) // Asegúrate de que `logo` sea la ruta correcta
+      .replace('{{medioPago}}', venta.medioPago) // Nuevo campo: Medio de Pago
       .replace(
         '{{productos}}',
         venta.productos
@@ -197,7 +200,7 @@ const RegistrarVenta = () => {
               fontSize: '0.875rem',
             }}
           >
-            <Typography sx={{ flex: 2 }}>Nombre</Typography>
+            <Typography sx={{ flex: 2 }}>Producto</Typography>
             <Typography sx={{ flex: 1 }}>Categoría</Typography>
             <Typography sx={{ flex: 1, textAlign: 'center' }}>Cantidad</Typography>
             <Typography sx={{ flex: 1, textAlign: 'right' }}>Precio Unit.</Typography>
@@ -228,10 +231,10 @@ const RegistrarVenta = () => {
                 </Button>
               </Box>
               <Typography sx={{ flex: 1, textAlign: 'right' }}>
-                S/ {producto.price_final.toFixed(2)}
+                $ {producto.price_final.toFixed(2)}
               </Typography>
               <Typography sx={{ flex: 1, textAlign: 'right', fontWeight: 'bold' }}>
-                S/ {(producto.cantidad * producto.price_final).toFixed(2)}
+                $ {(producto.cantidad * producto.price_final).toFixed(2)}
               </Typography>
             </Box>
           ))}
@@ -265,6 +268,23 @@ const RegistrarVenta = () => {
             <option value="Boleta">Boleta</option>
             <option value="Factura">Factura</option>
           </TextField>
+          <TextField
+            label="Medios de Pago"
+            variant="outlined"
+            select
+            SelectProps={{ native: true }}
+            fullWidth
+            value={medioPago}
+            onChange={(e) => {
+              setMedioPago(e.target.value);
+            }}
+            sx={{ mb: 2 }}
+          >
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+            <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+            <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+          </TextField>
           <FormControlLabel
             control={<Checkbox checked={abonado} onChange={(e) => setAbonado(e.target.checked)} />}
             label="💳 Abonado"
@@ -277,7 +297,7 @@ const RegistrarVenta = () => {
             💰 Total y Cambio
           </Typography>
           <Typography variant="body1" align="right">
-            Total: S/ {total.toFixed(2)}
+            Total: $ {total.toFixed(2)}
           </Typography>
           <TextField
             label="💵 Pago"
@@ -292,7 +312,7 @@ const RegistrarVenta = () => {
             sx={{ my: 2 }}
           />
           <Typography variant="body1" align="right" sx={{ color: pago >= total ? 'green' : 'red' }}>
-            Cambio: S/ {calcularCambio()}
+            Cambio: $ {calcularCambio()}
           </Typography>
         </Paper>
 
