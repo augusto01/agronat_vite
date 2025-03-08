@@ -138,14 +138,19 @@ const VerProductos = () => {
       field: 'price_usd',
       headerName: 'USD',
       width: 100,
-      renderCell: (params) => `USD ${params.value.toFixed(2)}`,
+      renderCell: (params) => (
+        <span style={{ color: 'lime' }}>USD {params.value.toFixed(2)}</span>
+      ),
     },
     {
       field: 'price_final',
       headerName: 'Precio Final',
       width: 120,
-      renderCell: (params) => `$${params.value.toFixed(2)}`,
-    },
+      renderCell: (params) => (
+        <span style={{ color: 'yellow' }}>${params.value.toFixed(2)}</span>
+      ),
+    }
+    ,
     {
       field: 'create_at',
       headerName: 'Ultima actualizacion',
@@ -204,14 +209,17 @@ const VerProductos = () => {
               transform: rotate(360deg);
             }
           }
+          body {
+            font-family: 'Open Sans', sans-serif;
+          }
         `}
       </style>
-      <Typography variant="h4" gutterBottom className="title" style={{ padding: '20px' }}>
-        Productos Registrados ({filteredProducts.length})
+      <Typography variant="h4" gutterBottom className="title" style={{ padding: '', fontFamily: 'Open Sans', fontWeight: 500 }}>
+        Mis productos 
       </Typography>
 
       {/* Filtros */}
-      <Grid container spacing={2} style={{ padding: '20px', paddingBottom: '10px' }}>
+      <Grid container spacing={2} style={{ padding: '', paddingBottom: '10px' }}>
         <Grid item xs={12} md={4}>
           <TextField
             label="Buscar producto"
@@ -219,19 +227,21 @@ const VerProductos = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             fullWidth
+            style={{ fontFamily: 'Roboto' }}
           />
         </Grid>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth>
-            <InputLabel>Categoría</InputLabel>
+            <InputLabel style={{ fontFamily: 'Roboto' }}>Categoría</InputLabel>
             <Select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
               label="Categoría"
+              style={{ fontFamily: 'Roboto' }}
             >
-              <MenuItem value="">Todas</MenuItem>
+              <MenuItem value="" style={{ fontFamily: 'Roboto' }}>Todas</MenuItem>
               {[...new Set(products.map((p) => p.category))].map((category) => (
-                <MenuItem key={category} value={category}>
+                <MenuItem key={category} value={category} style={{ fontFamily: 'Roboto' }}>
                   {category}
                 </MenuItem>
               ))}
@@ -240,15 +250,16 @@ const VerProductos = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth>
-            <InputLabel>Proveedor</InputLabel>
+            <InputLabel style={{ fontFamily: 'Roboto' }}>Proveedor</InputLabel>
             <Select
               value={filterProvider}
               onChange={(e) => setFilterProvider(e.target.value)}
               label="Proveedor"
+              style={{ fontFamily: 'Roboto' }}
             >
-              <MenuItem value="">Todos</MenuItem>
+              <MenuItem value="" style={{ fontFamily: 'Roboto' }}>Todos</MenuItem>
               {[...new Set(products.map((p) => p.provider))].map((provider) => (
-                <MenuItem key={provider} value={provider}>
+                <MenuItem key={provider} value={provider} style={{ fontFamily: 'Roboto' }}>
                   {provider}
                 </MenuItem>
               ))}
@@ -277,11 +288,14 @@ const VerProductos = () => {
                 '& .MuiDataGrid-cell': {
                   borderBottom: '1px solid #757575', // Líneas divisorias
                 },
+                fontFamily: 'Roboto',
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                borderRadius: '8px',
               }}
             />
           </div>
         </Grid>
-        <Grid item xs={1} style={{ paddingLeft: '10px' }}>
+        <Grid item xs={1} style={{ paddingLeft: '0px' }}>
           <Box display="flex" flexDirection="column" gap={2} alignItems="flex-end">
             {/* Botón de Agregar Producto */}
             <Tooltip title="Agregar producto" arrow>
@@ -295,6 +309,9 @@ const VerProductos = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  fontFamily: 'Roboto',
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                  borderRadius: '50%',
                 }}
                 onClick={() => setOpenAddModal(true)}
               >
@@ -314,6 +331,9 @@ const VerProductos = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  fontFamily: 'Roboto',
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                  borderRadius: '50%',
                 }}
                 onClick={() => setOpenMeasureModal(true)}
               >
@@ -333,6 +353,9 @@ const VerProductos = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  fontFamily: 'Roboto',
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                  borderRadius: '50%',
                 }}
                 onClick={() => setOpenProviderModal(true)}
               >
@@ -345,7 +368,7 @@ const VerProductos = () => {
 
       {/* Modal para agregar medida */}
       <Dialog open={openMeasureModal} onClose={() => setOpenMeasureModal(false)}>
-        <DialogTitle>Agregar Medida</DialogTitle>
+        <DialogTitle style={{ fontFamily: 'Roboto' }}>Agregar Medida</DialogTitle>
         <DialogContent>
           <TextField
             label="Nueva Medida"
@@ -353,12 +376,12 @@ const VerProductos = () => {
             value={newMeasure}
             onChange={(e) => setNewMeasure(e.target.value)}
             fullWidth
-            style={{ marginTop: '10px' }}
+            style={{ marginTop: '10px', fontFamily: 'Roboto' }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenMeasureModal(false)}>Cancelar</Button>
-          <Button onClick={handleAddMeasure} color="primary">
+          <Button onClick={() => setOpenMeasureModal(false)} style={{ fontFamily: 'Roboto' }}>Cancelar</Button>
+          <Button onClick={handleAddMeasure} color="primary" style={{ fontFamily: 'Roboto' }}>
             Agregar
           </Button>
         </DialogActions>
@@ -366,7 +389,7 @@ const VerProductos = () => {
 
       {/* Modal para agregar proveedor */}
       <Dialog open={openProviderModal} onClose={() => setOpenProviderModal(false)}>
-        <DialogTitle>Agregar Proveedor</DialogTitle>
+        <DialogTitle style={{ fontFamily: 'Roboto' }}>Agregar Proveedor</DialogTitle>
         <DialogContent>
           <TextField
             label="Nuevo Proveedor"
@@ -374,12 +397,12 @@ const VerProductos = () => {
             value={newProvider}
             onChange={(e) => setNewProvider(e.target.value)}
             fullWidth
-            style={{ marginTop: '10px' }}
+            style={{ marginTop: '10px', fontFamily: 'Roboto' }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenProviderModal(false)}>Cancelar</Button>
-          <Button onClick={handleAddProvider} color="primary">
+          <Button onClick={() => setOpenProviderModal(false)} style={{ fontFamily: 'Roboto' }}>Cancelar</Button>
+          <Button onClick={handleAddProvider} color="primary" style={{ fontFamily: 'Roboto' }}>
             Agregar
           </Button>
         </DialogActions>

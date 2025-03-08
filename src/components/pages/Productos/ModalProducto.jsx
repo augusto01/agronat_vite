@@ -77,10 +77,38 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validar que el campo descripción no esté vacío
+    if (!productData.description.trim()) {
+      setSnackbarConfig({
+        open: true,
+        message: 'El campo descripción es requerido',
+        severity: 'error',
+      });
+      return;
+    }
+
+    // Si el campo proveedor está vacío, se asigna "Proveedor" por defecto
+    const provider = productData.provider.trim() || 'Proveedor';
+
+    // Si el campo medida está vacío, se asigna "Unidades" por defecto
+    const medida = productData.medida.trim() || 'Unidades';
+
+    // Si el campo price_siva está vacío, se asigna 1 por defecto
+    const price_siva = productData.price_siva || 1;
+
+    // Si el campo por_marginal está vacío, se asigna 0 por defecto
+    const por_marginal = productData.por_marginal || 0;
+
+    // Si el campo por_descuento está vacío, se asigna 0 por defecto
+    const por_descuento = productData.por_descuento || 0;
+
     const updatedProduct = {
       ...productData,
-      por_marginal: parseFloat(productData.por_marginal), // Asegurar que sea un número
-      por_descuento: parseFloat(productData.por_descuento), // Asegurar que sea un número
+      provider, // Asignar el proveedor por defecto si está vacío
+      medida,   // Asignar la medida por defecto si está vacía
+      price_siva, // Asignar el precio IVA por defecto si está vacío
+      por_marginal, // Asignar el margen por defecto si está vacío
+      por_descuento, // Asignar el descuento por defecto si está vacío
     };
 
     try {
@@ -182,6 +210,7 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
                   value={productData.description}
                   onChange={handleChange}
                   margin="normal"
+                  required
                 />
                 <FormControl fullWidth margin="normal">
                   <InputLabel>Categoría</InputLabel>
@@ -250,6 +279,7 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
                   value={productData.price_siva}
                   onChange={handleChange}
                   margin="normal"
+                  required
                 />
                 <TextField
                   fullWidth
@@ -268,6 +298,7 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
                   value={productData.por_marginal}
                   onChange={handleChange}
                   margin="normal"
+                  required
                 />
                 <TextField
                   fullWidth
@@ -277,6 +308,7 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
                   value={productData.por_descuento}
                   onChange={handleChange}
                   margin="normal"
+                  required
                 />
 
                 {/* Mostrar el Precio Final */}
