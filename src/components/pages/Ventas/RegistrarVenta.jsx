@@ -8,6 +8,7 @@ const RegistrarVenta = () => {
   const [productosVenta, setProductosVenta] = useState([]);
   const [pago, setPago] = useState('');
   const [total, setTotal] = useState(0);
+  const [subtTotal, setsubTotal] = useState(0);
   const [cliente, setCliente] = useState('Consumidor Final');
   const [comprobante, setComprobante] = useState('Boleta');
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,21 +40,25 @@ const RegistrarVenta = () => {
     // Verificar si el producto ya está en la lista
     const existe = productosVenta.find((p) => p._id === producto._id);
     
+    let nuevaLista;
+  
     if (existe) {
       // Si ya existe, aumentar su cantidad
-      const nuevaLista = productosVenta.map((p) =>
-        p._id === producto._id ? { ...p, cantidad: p.cantidad + 1 } : p
+      nuevaLista = productosVenta.map((p) =>
+        p._id === producto._id
+          ? { ...p, cantidad: p.cantidad + 1, subtotal: (p.cantidad + 1) * p.price_final }
+          : p
       );
-      setProductosVenta(nuevaLista);
-      calcularTotal(nuevaLista);
     } else {
-      // Si no existe, agregarlo con cantidad 1
-      const nuevoProducto = { ...producto, cantidad: 1 };
-      const nuevaLista = [...productosVenta, nuevoProducto];
-      setProductosVenta(nuevaLista);
-      calcularTotal(nuevaLista);
+      // Si no existe, agregarlo con cantidad 1 y calcular el subtotal
+      const nuevoProducto = { ...producto, cantidad: 1, subtotal: producto.price_final };
+      nuevaLista = [...productosVenta, nuevoProducto];
     }
+  
+    setProductosVenta(nuevaLista);
+    calcularTotal(nuevaLista); // Asegúrate de que calcularTotal use el subtotal
   };
+  
   
 
   const agregarConCantidad = () => {
@@ -72,28 +77,48 @@ const RegistrarVenta = () => {
   };
 
   const calcularTotal = (productos) => {
-    const nuevoTotal = productos.reduce((sum, producto) => sum + (producto.price_final || 0) * (producto.cantidad || 0), 0);
-    setTotal(nuevoTotal);
+    const total = productos.reduce((acc, p) => acc + (p.subtotal || 0), 0);
+    setTotal(total);
   };
+  
+
+
+  //calcular subtotal
+  const calcularSubTotal = (productos) => {
+    const subTotal = productos.reduce((acum, producto) => {
+      return acum + (producto.price_final || 0) * (producto.cantidad || 0);
+    }, 0);
+    
+    setTotal(subTotal); // Asegúrate de que setTotal está definido en tu componente
+  };
+  
 
   const aumentarCantidad = (id) => {
     const nuevaLista = productosVenta.map((p) =>
-      p._id === id ? { ...p, cantidad: p.cantidad + 1 } : p
+      p._id === id
+        ? { ...p, cantidad: p.cantidad + 1, subtotal: (p.cantidad + 1) * p.price_final }
+        : p
     );
+  
     setProductosVenta(nuevaLista);
     calcularTotal(nuevaLista);
   };
   
   const disminuirCantidad = (id) => {
-    const nuevaLista = productosVenta.map((p) =>
-      p._id === id && p.cantidad > 1 ? { ...p, cantidad: p.cantidad - 1 } : p
-    );
+    const nuevaLista = productosVenta
+      .map((p) =>
+        p._id === id && p.cantidad > 1
+          ? { ...p, cantidad: p.cantidad - 1, subtotal: (p.cantidad - 1) * p.price_final }
+          : p
+      )
+      .filter((p) => p.cantidad > 0); // Si cantidad es 0, lo elimina
+  
     setProductosVenta(nuevaLista);
     calcularTotal(nuevaLista);
   };
+  
 
   const columnasVenta = [
-    { field: 'id', headerName: 'ID', width: 100, valueGetter: (params) => params.row?._id || 'N/A' },
     { field: 'name', headerName: 'Nombre', flex: 1 },
     { field: 'description', headerName: 'Descripcion.', width: 150 },
     { field: 'category', headerName: 'Categoría', width: 150 },
@@ -149,8 +174,13 @@ const RegistrarVenta = () => {
     {
       field: 'subtotal',
       headerName: 'Subtotal',
-      width: 120
-    },
+      width: 120,
+      valueGetter: (params) => params.row?.subtotal?.toFixed(2) || "0.00"
+    }
+    
+    
+    
+    
   ];
 
   return (
