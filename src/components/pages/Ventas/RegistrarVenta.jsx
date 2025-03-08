@@ -132,14 +132,14 @@ const RegistrarVenta = () => {
           <tr>
             <td>${producto.name}</td>
             <td>${producto.cantidad}</td>
-            <td>S/ ${producto.price_final.toFixed(2)}</td>
-            <td>S/ ${(producto.cantidad * producto.price_final).toFixed(2)}</td>
+            <td>$ ${producto.price_final.toFixed(2)}</td>
+            <td>$ ${(producto.cantidad * producto.price_final).toFixed(2)}</td>
           </tr>
         `
           )
           .join('')
       )
-      .replace('{{total}}', `S/ ${venta.total.toFixed(2)}`);
+      .replace('{{total}}', `$ ${venta.total.toFixed(2)}`);
   
     // Abrir la ventana de impresión y escribir el HTML
     const ventanaImpresion = window.open('', '_blank');
@@ -174,7 +174,7 @@ const RegistrarVenta = () => {
         {/* Buscador de productos */}
         <Autocomplete
           options={productosRegistrados}
-          getOptionLabel={(option) => `${option.name} - ${option.category} - S/ ${option.price_final}`}
+          getOptionLabel={(option) => `${option.name} - ${option.category} - $ ${option.price_final}`}
           onInputChange={(e, newValue) => setSearchQuery(newValue)}
           onChange={(event, newValue) => newValue && agregarProducto(newValue)}
           renderInput={(params) => (

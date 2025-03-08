@@ -12,14 +12,16 @@
     <div class="header">
       <img src="{{logo}}" alt="Logo" class="logo">
       <div class="empresa-info">
-        <p>AGRONAT</p>
         <p>Dirección: Pellegrini 1261</p>
         <p>Teléfono: 3795172153</p>
+        <p>Correo: contacto@agronat.com.ar</p> <!-- Nuevo campo: Correo -->
+        <p>Sitio Web: <a href="https://www.agronat.com.ar" target="_blank" style="text-decoration: none, color(gray);">
+            www.agronat.com.ar</a></p> <!-- Nuevo campo: Sitio Web -->
       </div>
       <div class="comprobante-info">
         <h1>{{comprobante}}</h1>
         <p>Comprobante N°: {{numeroComprobante}}</p>
-        <p>Fecha: {{fecha}}</p>
+        <p>Fecha de la venta: {{fecha}}</p>
         <p>Medio de Pago: {{medioPago}}</p> <!-- Nuevo campo: Medio de Pago -->
       </div>
     </div>
@@ -32,7 +34,7 @@
     <table class="invoice-table">
       <thead>
         <tr>
-          <th>Descripción / Producto</th>
+          <th>Producto</th>
           <th>Cantidad</th>
           <th>Precio Unitario</th>
           <th>Subtotal</th>

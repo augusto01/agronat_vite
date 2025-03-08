@@ -58,15 +58,7 @@ const FacturaComprobante = ({ venta }) => {
       <Box className="totales">
         <div>
           <Typography>Subtotal:</Typography>
-          <Typography>S/ {total.toFixed(2)}</Typography>
-        </div>
-        <div>
-          <Typography>Impuestos (0%):</Typography>
-          <Typography>S/ 0.00</Typography>
-        </div>
-        <div className="total">
-          <Typography>Total:</Typography>
-          <Typography>S/ {total.toFixed(2)}</Typography>
+          <Typography>$ {total.toFixed(2)}</Typography>
         </div>
       </Box>
 
