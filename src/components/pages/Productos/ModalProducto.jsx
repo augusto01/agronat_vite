@@ -30,12 +30,18 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
   const [providers, setProviders] = useState(['GelTek', 'Proveedor 2', 'Proveedor 3']);
   const [measures, setMeasures] = useState(['kg', 'm', 'L']);
 
+  // Actualizar el estado con los datos del producto seleccionado
   useEffect(() => {
     if (selectedProduct) {
-      setProductData(selectedProduct);
+      setProductData({
+        ...selectedProduct,
+        por_marginal: selectedProduct.por_marginal || 0, // Asegurar que tenga un valor por defecto
+        por_descuento: selectedProduct.por_descuento || 0, // Asegurar que tenga un valor por defecto
+      });
     }
   }, [selectedProduct]);
 
+  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prev) => ({
@@ -44,39 +50,42 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
     }));
   };
 
+  // Cerrar el Snackbar
   const handleSnackbarClose = () => {
     setSnackbarConfig((prevState) => ({ ...prevState, open: false }));
   };
 
   // Cálculo del precio final con descuento y margen
   useEffect(() => {
-    let finalPrice = productData.price_siva;
-  
+    let finalPrice = parseFloat(productData.price_siva) || 0;
+
     if (productData.por_marginal > 0) {
-      finalPrice = productData.price_siva * (1 + productData.por_marginal / 100);
+      finalPrice = finalPrice * (1 + parseFloat(productData.por_marginal) / 100);
     }
-  
+
     if (productData.por_descuento > 0) {
-      finalPrice = finalPrice * (1 - productData.por_descuento / 100);
+      finalPrice = finalPrice * (1 - parseFloat(productData.por_descuento) / 100);
     }
-  
+
     setProductData((prev) => ({
       ...prev,
-      price_final: finalPrice,
+      price_final: finalPrice.toFixed(2), // Redondear a 2 decimales
     }));
   }, [productData.price_siva, productData.por_marginal, productData.por_descuento]);
 
-  // Maneja la sumisión del formulario (editar producto)
+  // Manejar la sumisión del formulario (editar producto)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedProduct = { 
-      ...productData, 
+    const updatedProduct = {
+      ...productData,
+      por_marginal: parseFloat(productData.por_marginal), // Asegurar que sea un número
+      por_descuento: parseFloat(productData.por_descuento), // Asegurar que sea un número
     };
 
     try {
       await axios.put(`http://localhost:5000/api/product/actualizar_producto/${productData.id}`, updatedProduct);
-      
+
       setSnackbarConfig({
         open: true,
         message: 'Producto editado correctamente',
@@ -87,6 +96,7 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
         handleCloseModal(); // Cierra el modal después de un breve tiempo
       }, 1000);
 
+      // Actualizar el DataGrid llamando a fetchProducts
       if (fetchProducts && typeof fetchProducts === 'function') {
         fetchProducts(); // Actualiza los productos después de la edición
       }
@@ -100,23 +110,24 @@ const ModalProducto = ({ openModal, handleCloseModal, selectedProduct, fetchProd
     }
   };
 
-  // Maneja la eliminación del producto
+  // Manejar la eliminación del producto
   const handleDelete = async (e) => {
     e.preventDefault();
 
     try {
       await axios.put(`http://localhost:5000/api/product/desactivar_producto/${productData.id}`);
-      
+
       setSnackbarConfig({
         open: true,
         message: 'Producto eliminado correctamente',
         severity: 'success',
       });
-      
+
       setTimeout(() => {
         handleCloseModal(); // Cierra el modal después de un breve tiempo
       }, 1000);
 
+      // Actualizar el DataGrid llamando a fetchProducts
       if (fetchProducts && typeof fetchProducts === 'function') {
         fetchProducts();
       }

@@ -104,6 +104,7 @@ const VerProductos = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedProduct(null);
+    fetchProducts(); // Actualizar el grid después de cerrar el modal
   };
 
   // Columnas del DataGrid
@@ -111,15 +112,27 @@ const VerProductos = () => {
     { field: 'id', headerName: 'ID', width: 85 },
     { field: 'name', headerName: 'Nombre', width: 150 },
     { field: 'category', headerName: 'Categoría', width: 120 },
-    { field: 'quantity', headerName: 'Cantidad', width: 100 },
+    { field: 'quantity', headerName: 'Stock', width: 50 },
     { field: 'description', headerName: 'Descripción', width: 200 },
-    { field: 'medida', headerName: 'Medida', width: 100 },
-    { field: 'provider', headerName: 'Proveedor', width: 150 },
+    { field: 'medida', headerName: 'Medida', width: 60 },
+    { field: 'provider', headerName: 'Proveedor', width: 100 },
     {
       field: 'price_siva',
       headerName: 'PRECIO IVA',
       width: 120,
       renderCell: (params) => `$${params.value.toFixed(2)}`,
+    },
+    {
+      field: 'por_marginal',
+      headerName: 'Margen (%)',
+      width: 100,
+      renderCell: (params) => `${params.value}%`,
+    },
+    {
+      field: 'por_descuento',
+      headerName: 'Descuento (%)',
+      width: 70,
+      renderCell: (params) => `${params.value}%`,
     },
     {
       field: 'price_usd',
@@ -151,7 +164,6 @@ const VerProductos = () => {
           variant="contained"
           color="primary"
           onClick={() => handleEdit(params.row)}
-          
         >
           <SettingsIcon
             style={{
@@ -173,6 +185,8 @@ const VerProductos = () => {
     medida: product.medida,
     provider: product.provider,
     price_siva: product.price_siva,
+    por_marginal: product.por_marginal,
+    por_descuento: product.por_descuento,
     price_usd: product.price_usd,
     price_final: product.price_final,
     create_at: product.create_at,
@@ -383,11 +397,7 @@ const VerProductos = () => {
           openModal={openModal}
           handleCloseModal={handleCloseModal}
           selectedProduct={selectedProduct}
-          handleEdit={(updatedProduct) => console.log(updatedProduct)}
-          handleDelete={(productId) => console.log(productId)}
-          handleChange={(field, value) => {
-            setSelectedProduct((prev) => ({ ...prev, [field]: value }));
-          }}
+          fetchProducts={fetchProducts} // Pasar fetchProducts como prop
         />
       )}
     </Container>
