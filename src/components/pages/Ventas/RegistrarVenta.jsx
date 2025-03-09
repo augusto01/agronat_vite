@@ -25,7 +25,8 @@ const RegistrarVenta = () => {
   const [comprobante, setComprobante] = useState('Boleta');
   const [medioPago, setMedioPago] = useState('Efectivo');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [ventanaImpresion, setVentanaImpresion] = useState(null); // Definir ventanaImpresion en el estado
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false); // Estado para el mensaje de error
+  const [ventanaImpresion, setVentanaImpresion] = useState(null);
 
   // Obtener productos disponibles
   useEffect(() => {
@@ -99,7 +100,7 @@ const RegistrarVenta = () => {
   };
 
   // Eliminar toda la venta
-  const limpiar_carrito = () => {
+  const eliminarVenta = () => {
     setCarrito([]);
     setTotal(0);
     setPago('');
@@ -107,6 +108,12 @@ const RegistrarVenta = () => {
 
   // Función para imprimir la factura/comprobante
   const imprimirFactura = async () => {
+    // Validar si el carrito está vacío
+    if (carrito.length === 0) {
+      setOpenErrorSnackbar(true); // Mostrar mensaje de error
+      return; // Detener la ejecución
+    }
+
     const venta = {
       cliente,
       comprobante,
@@ -151,14 +158,14 @@ const RegistrarVenta = () => {
     iframe.contentDocument.write(facturaHTML);
     iframe.contentDocument.close();
 
-    // Mostrar Snackbar
+    // Mostrar Snackbar de éxito
     setOpenSnackbar(true);
 
     // Guardar el iframe en el estado para usarlo en handlePrintReceipt
     setVentanaImpresion(iframe);
   };
 
-  // Cerrar Snackbar
+  // Cerrar Snackbar de éxito
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -167,10 +174,17 @@ const RegistrarVenta = () => {
 
     // Eliminar el iframe si el usuario elige "No"
     if (ventanaImpresion) {
-      limpiar_carrito();
       document.body.removeChild(ventanaImpresion);
       setVentanaImpresion(null); // Limpiar el estado
     }
+  };
+
+  // Cerrar Snackbar de error
+  const handleCloseErrorSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenErrorSnackbar(false);
   };
 
   // Imprimir el comprobante
@@ -179,7 +193,6 @@ const RegistrarVenta = () => {
       ventanaImpresion.contentWindow.print();
       document.body.removeChild(ventanaImpresion);
       setVentanaImpresion(null); // Limpiar el estado
-      limpiar_carrito();
     }
     setOpenSnackbar(false);
   };
@@ -334,7 +347,7 @@ const RegistrarVenta = () => {
           <Button
             variant="contained"
             color="error"
-            onClick={limpiar_carrito}
+            onClick={eliminarVenta}
             sx={{ flex: 1, gap: 1, fontWeight: 'bold' }}
           >
             ❌ Cancelar Venta
@@ -366,6 +379,14 @@ const RegistrarVenta = () => {
             </Button>
           </>
         }
+      />
+
+      {/* Notificación de error */}
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseErrorSnackbar}
+        message="⚠️ Error: No hay productos en el carrito."
       />
     </Box>
   );
