@@ -145,7 +145,7 @@ const VerProductos = () => {
     {
       field: 'price_final',
       headerName: 'Precio Final',
-      width: 120,
+      width: 100,
       renderCell: (params) => (
         <span style={{ color: 'yellow' }}>${params.value.toFixed(2)}</span>
       ),
@@ -154,7 +154,7 @@ const VerProductos = () => {
     {
       field: 'create_at',
       headerName: 'Ultima actualizacion',
-      width: 100,
+      width: 90,
       renderCell: (params) => {
         const date = new Date(params.value);
         return date.toLocaleDateString();
@@ -163,7 +163,7 @@ const VerProductos = () => {
     {
       field: 'actions',
       headerName: 'Acciones',
-      width: 100,
+      width: 120,
       renderCell: (params) => (
         <Button
           variant="contained"

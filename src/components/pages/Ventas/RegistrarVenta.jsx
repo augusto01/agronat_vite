@@ -16,16 +16,16 @@ import logo from '../../../assets/agronat-logo.png'; // Importar el logo
 const RegistrarVenta = () => {
   const [productosRegistrados, setProductosRegistrados] = useState([]);
   const [carrito, setCarrito] = useState([]);
-  const [ventanaImpresion, setVentanaImpresion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [abonado, setAbonado] = useState(true); // Estado inicial del checkbox
+  const [abonado, setAbonado] = useState(true);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [pago, setPago] = useState('');
   const [cliente, setCliente] = useState('Consumidor Final');
   const [comprobante, setComprobante] = useState('Boleta');
-  const [medioPago, setMedioPago] = useState('Efectivo'); // Estado inicial  const [abonado, setAbonado] = useState(true);
-  const [openSnackbar, setOpenSnackbar] = useState(false); // Estado para el Snackbar
+  const [medioPago, setMedioPago] = useState('Efectivo');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [ventanaImpresion, setVentanaImpresion] = useState(null); // Definir ventanaImpresion en el estado
 
   // Obtener productos disponibles
   useEffect(() => {
@@ -60,6 +60,9 @@ const RegistrarVenta = () => {
       const nuevoProducto = { ...producto, cantidad: 1 };
       setCarrito([...carrito, nuevoProducto]);
     }
+
+    // Limpiar el input del buscador
+    setSearchQuery('');
 
     calcularTotal();
   };
@@ -96,7 +99,7 @@ const RegistrarVenta = () => {
   };
 
   // Eliminar toda la venta
-  const eliminarVenta = () => {
+  const limpiar_carrito = () => {
     setCarrito([]);
     setTotal(0);
     setPago('');
@@ -109,21 +112,21 @@ const RegistrarVenta = () => {
       comprobante,
       productos: carrito,
       total: carrito.reduce((acc, producto) => acc + producto.cantidad * producto.price_final, 0),
-      medioPago, // Asegúrate de que este estado esté definido en tu componente
+      medioPago,
     };
-  
+
     // Cargar el archivo factura.html desde la carpeta public
     const response = await fetch('/factura.html');
     let facturaHTML = await response.text();
-  
+
     // Reemplazar las variables dinámicas en el HTML
     facturaHTML = facturaHTML
       .replace('{{comprobante}}', venta.comprobante === 'Boleta' ? 'BOLETA DE VENTA' : 'FACTURA')
       .replace('{{numeroComprobante}}', venta.comprobante === 'Boleta' ? 'Boleta n.º 01234' : 'Factura n.º 01234')
       .replace('{{fecha}}', new Date().toLocaleDateString())
       .replace('{{cliente}}', venta.cliente)
-      .replace('{{logo}}', logo) // Asegúrate de que `logo` sea la ruta correcta
-      .replace('{{medioPago}}', venta.medioPago) // Nuevo campo: Medio de Pago
+      .replace('{{logo}}', logo)
+      .replace('{{medioPago}}', venta.medioPago)
       .replace(
         '{{productos}}',
         venta.productos
@@ -140,31 +143,45 @@ const RegistrarVenta = () => {
           .join('')
       )
       .replace('{{total}}', `$ ${venta.total.toFixed(2)}`);
-  
-    // Abrir la ventana de impresión y escribir el HTML
-    const ventanaImpresion = window.open('', '_blank');
-    ventanaImpresion.document.write(facturaHTML);
-    ventanaImpresion.document.close();
-  
+
+    // Crear un elemento iframe para mostrar la factura
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.write(facturaHTML);
+    iframe.contentDocument.close();
+
     // Mostrar Snackbar
     setOpenSnackbar(true);
-  
-    // Guardar la ventana de impresión en el estado para usarla en handleCloseSnackbar
-    setVentanaImpresion(ventanaImpresion);
+
+    // Guardar el iframe en el estado para usarlo en handlePrintReceipt
+    setVentanaImpresion(iframe);
   };
-  
-  // Cerrar Snackbar y preguntar si desea imprimir
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  
-    // Mostrar diálogo de confirmación después de cerrar el Snackbar
-    const confirmarImpresion = window.confirm(
-      'Venta generada con éxito. ¿Desea imprimir el comprobante?'
-    );
-  
-    if (confirmarImpresion && ventanaImpresion) {
-      ventanaImpresion.print(); // Abre el diálogo de impresión
+
+  // Cerrar Snackbar
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
+    setOpenSnackbar(false);
+
+    // Eliminar el iframe si el usuario elige "No"
+    if (ventanaImpresion) {
+      limpiar_carrito();
+      document.body.removeChild(ventanaImpresion);
+      setVentanaImpresion(null); // Limpiar el estado
+    }
+  };
+
+  // Imprimir el comprobante
+  const handlePrintReceipt = () => {
+    if (ventanaImpresion) {
+      ventanaImpresion.contentWindow.print();
+      document.body.removeChild(ventanaImpresion);
+      setVentanaImpresion(null); // Limpiar el estado
+      limpiar_carrito();
+    }
+    setOpenSnackbar(false);
   };
 
   return (
@@ -177,6 +194,7 @@ const RegistrarVenta = () => {
           getOptionLabel={(option) => `${option.name} - ${option.category} - ${option.description} - $ ${option.price_final}`}
           onInputChange={(e, newValue) => setSearchQuery(newValue)}
           onChange={(event, newValue) => newValue && agregarProducto(newValue)}
+          value={null} // Limpiar el valor seleccionado
           renderInput={(params) => (
             <TextField {...params} label="🔍 Buscar productos" variant="outlined" fullWidth />
           )}
@@ -275,9 +293,7 @@ const RegistrarVenta = () => {
             SelectProps={{ native: true }}
             fullWidth
             value={medioPago}
-            onChange={(e) => {
-              setMedioPago(e.target.value);
-            }}
+            onChange={(e) => setMedioPago(e.target.value)}
             sx={{ mb: 2 }}
           >
             <option value="Efectivo">Efectivo</option>
@@ -305,10 +321,7 @@ const RegistrarVenta = () => {
             variant="outlined"
             fullWidth
             value={pago}
-            onChange={(e) => {
-              const value = e.target.value;
-              setPago(value === '' ? '' : Number(value));
-            }}
+            onChange={(e) => setPago(e.target.value === '' ? '' : Number(e.target.value))}
             sx={{ my: 2 }}
           />
           <Typography variant="body1" align="right" sx={{ color: pago >= total ? 'green' : 'red' }}>
@@ -321,7 +334,7 @@ const RegistrarVenta = () => {
           <Button
             variant="contained"
             color="error"
-            onClick={eliminarVenta}
+            onClick={limpiar_carrito}
             sx={{ flex: 1, gap: 1, fontWeight: 'bold' }}
           >
             ❌ Cancelar Venta
@@ -342,7 +355,17 @@ const RegistrarVenta = () => {
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        message="Venta generada con éxito."
+        message="Venta generada con éxito. Desea imprimir el comprobante?"
+        action={
+          <>
+            <Button color="success" size="small" onClick={handlePrintReceipt}>
+              Sí
+            </Button>
+            <Button color="red" size="small" onClick={handleCloseSnackbar}>
+              No
+            </Button>
+          </>
+        }
       />
     </Box>
   );
