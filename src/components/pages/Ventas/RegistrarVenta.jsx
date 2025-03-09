@@ -88,6 +88,28 @@ const RegistrarVenta = () => {
     calcularTotal();
   };
 
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  
+    // Eliminar el iframe si el usuario elige "No"
+    if (ventanaImpresion) {
+      document.body.removeChild(ventanaImpresion);
+      setVentanaImpresion(null); // Limpiar el estado
+    }
+  };
+
+  const handlePrintReceipt = () => {
+    if (ventanaImpresion) {
+      ventanaImpresion.contentWindow.print(); // Imprimir el contenido del iframe
+      document.body.removeChild(ventanaImpresion); // Eliminar el iframe después de imprimir
+      setVentanaImpresion(null); // Limpiar el estado
+    }
+    setOpenSnackbar(false); // Cerrar el Snackbar
+  };
+
   // Calcular el total de la venta
   const calcularTotal = () => {
     const totalCalculado = carrito.reduce((acc, producto) => acc + producto.cantidad * producto.price_final, 0);
@@ -107,13 +129,15 @@ const RegistrarVenta = () => {
   };
 
   // Función para imprimir la factura/comprobante
+  // RegistrarVenta.js
+
   const imprimirFactura = async () => {
     // Validar si el carrito está vacío
     if (carrito.length === 0) {
       setOpenErrorSnackbar(true); // Mostrar mensaje de error
       return; // Detener la ejecución
     }
-
+  
     const venta = {
       cliente,
       comprobante,
@@ -122,82 +146,64 @@ const RegistrarVenta = () => {
       medioPago,
     };
 
-    // Cargar el archivo factura.html desde la carpeta public
-    const response = await fetch('/factura.html');
-    let facturaHTML = await response.text();
-
-    // Reemplazar las variables dinámicas en el HTML
-    facturaHTML = facturaHTML
-      .replace('{{comprobante}}', venta.comprobante === 'Boleta' ? 'BOLETA DE VENTA' : 'FACTURA')
-      .replace('{{numeroComprobante}}', venta.comprobante === 'Boleta' ? '000000001' : '00000000001')
-      .replace('{{fecha}}', new Date().toLocaleDateString())
-      .replace('{{cliente}}', venta.cliente)
-      .replace('{{logo}}', logo)
-      .replace('{{medioPago}}', venta.medioPago)
-      .replace(
-        '{{productos}}',
-        venta.productos
-          .map(
-            (producto) => `
-          <tr>
-            <td>${producto.name}</td>
-            <td>${producto.cantidad}</td>
-            <td>$ ${producto.price_final.toFixed(2)}</td>
-            <td>$ ${(producto.cantidad * producto.price_final).toFixed(2)}</td>
-          </tr>
-        `
+   
+  
+    try {
+      // Llamar al backend para registrar la venta y actualizar el stock
+      const response = await axios.post('http://localhost:5000/api/sales/registrar_venta', venta);
+  
+      if (response.status === 200) {
+        // Cargar el archivo factura.html desde la carpeta public
+        const responseFactura = await fetch('/factura.html');
+        let facturaHTML = await responseFactura.text();
+  
+        // Reemplazar las variables dinámicas en el HTML
+        facturaHTML = facturaHTML
+          .replace('{{comprobante}}', venta.comprobante === 'Boleta' ? 'BOLETA DE VENTA' : 'FACTURA')
+          .replace('{{numeroComprobante}}', venta.comprobante === 'Boleta' ? '000000001' : '00000000001')
+          .replace('{{fecha}}', new Date().toLocaleDateString())
+          .replace('{{cliente}}', venta.cliente)
+          .replace('{{logo}}', logo)
+          .replace('{{medioPago}}', venta.medioPago)
+          .replace(
+            '{{productos}}',
+            venta.productos
+              .map(
+                (producto) => `
+              <tr>
+                <td>${producto.name}</td>
+                <td>${producto.cantidad}</td>
+                <td>$ ${producto.price_final.toFixed(2)}</td>
+                <td>$ ${(producto.cantidad * producto.price_final).toFixed(2)}</td>
+              </tr>
+            `
+              )
+              .join('')
           )
-          .join('')
-      )
-      .replace('{{total}}', `$ ${venta.total.toFixed(2)}`);
-
-    // Crear un elemento iframe para mostrar la factura
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    iframe.contentDocument.write(facturaHTML);
-    iframe.contentDocument.close();
-
-    // Mostrar Snackbar de éxito
-    setOpenSnackbar(true);
-
-    //limpiar el carrito
-    limpiar_carrito();
-
-    // Guardar el iframe en el estado para usarlo en handlePrintReceipt
-    setVentanaImpresion(iframe);
-  };
-
-  // Cerrar Snackbar de éxito
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
+          .replace('{{total}}', `$ ${venta.total.toFixed(2)}`);
+  
+        // Crear un elemento iframe para mostrar la factura
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        iframe.contentDocument.write(facturaHTML);
+        iframe.contentDocument.close();
+  
+        // Mostrar Snackbar de éxito
+        setOpenSnackbar(true);
+  
+        // Limpiar el carrito
+        limpiar_carrito();
+  
+        // Guardar el iframe en el estado para usarlo en handlePrintReceipt
+        setVentanaImpresion(iframe);
+      }
+    } catch (error) {
+      console.error('Error al registrar la venta:', error);
+      setOpenErrorSnackbar(true); // Mostrar mensaje de error
     }
-    setOpenSnackbar(false);
 
-    // Eliminar el iframe si el usuario elige "No"
-    if (ventanaImpresion) {
-      document.body.removeChild(ventanaImpresion);
-      setVentanaImpresion(null); // Limpiar el estado
-    }
-  };
-
-  // Cerrar Snackbar de error
-  const handleCloseErrorSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenErrorSnackbar(false);
-  };
-
-  // Imprimir el comprobante
-  const handlePrintReceipt = () => {
-    if (ventanaImpresion) {
-      ventanaImpresion.contentWindow.print();
-      document.body.removeChild(ventanaImpresion);
-      setVentanaImpresion(null); // Limpiar el estado
-    }
-    setOpenSnackbar(false);
+    
   };
 
   return (
@@ -388,7 +394,7 @@ const RegistrarVenta = () => {
       <Snackbar
         open={openErrorSnackbar}
         autoHideDuration={3000}
-        onClose={handleCloseErrorSnackbar}
+        onClose={handleCloseSnackbar}
         message="⚠️ Error: No hay productos en el carrito."
       />
     </Box>
