@@ -112,9 +112,9 @@ const VerProductos = () => {
     { field: 'id', headerName: 'ID', width: 85 },
     { field: 'name', headerName: 'Nombre', width: 150 },
     { field: 'category', headerName: 'Categoría', width: 120 },
-    { field: 'quantity', headerName: 'Stock', width: 50 },
     { field: 'description', headerName: 'Descripción', width: 200 },
-    { field: 'medida', headerName: 'Medida', width: 60 },
+    { field: 'quantity', headerName: 'Stock', width: 50 },
+    { field: 'medida', headerName: 'Medida', width: 80 },
     { field: 'provider', headerName: 'Proveedor', width: 100 },
     {
       field: 'price_siva',
