@@ -100,7 +100,7 @@ const RegistrarVenta = () => {
   };
 
   // Eliminar toda la venta
-  const eliminarVenta = () => {
+  const limpiar_carrito = () => {
     setCarrito([]);
     setTotal(0);
     setPago('');
@@ -129,7 +129,7 @@ const RegistrarVenta = () => {
     // Reemplazar las variables dinámicas en el HTML
     facturaHTML = facturaHTML
       .replace('{{comprobante}}', venta.comprobante === 'Boleta' ? 'BOLETA DE VENTA' : 'FACTURA')
-      .replace('{{numeroComprobante}}', venta.comprobante === 'Boleta' ? 'Boleta n.º 01234' : 'Factura n.º 01234')
+      .replace('{{numeroComprobante}}', venta.comprobante === 'Boleta' ? '000000001' : '00000000001')
       .replace('{{fecha}}', new Date().toLocaleDateString())
       .replace('{{cliente}}', venta.cliente)
       .replace('{{logo}}', logo)
@@ -160,6 +160,9 @@ const RegistrarVenta = () => {
 
     // Mostrar Snackbar de éxito
     setOpenSnackbar(true);
+
+    //limpiar el carrito
+    limpiar_carrito();
 
     // Guardar el iframe en el estado para usarlo en handlePrintReceipt
     setVentanaImpresion(iframe);
@@ -347,7 +350,7 @@ const RegistrarVenta = () => {
           <Button
             variant="contained"
             color="error"
-            onClick={eliminarVenta}
+            onClick={limpiar_carrito}
             sx={{ flex: 1, gap: 1, fontWeight: 'bold' }}
           >
             ❌ Cancelar Venta
