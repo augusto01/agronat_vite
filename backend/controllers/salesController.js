@@ -53,12 +53,12 @@ exports.registrarVenta = async (req, res) => {
         return res.status(404).json({ message: `Producto con ID ${producto._id} no encontrado.` });
       }
 
-      if (productoEnDB.stock < producto.cantidad) {
+      if (productoEnDB.quantity < producto.cantidad) {
         return res.status(400).json({ message: `No hay suficiente stock para el producto ${productoEnDB.name}.` });
       }
 
       // Restar la cantidad vendida del stock
-      productoEnDB.stock -= producto.cantidad;
+      productoEnDB.quantity -= producto.cantidad;
       await productoEnDB.save();
 
       // Agregar el producto a la lista de productos de la venta
